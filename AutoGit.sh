@@ -1,5 +1,15 @@
 #!/bin/sh
 
+if [ "$1" = "" ]; then
+	echo ""
+	echo "The parameter value is empty. Write your commit message!"
+	echo "Usage: ./AutoGit.sh [ \"Commit message\" ]"
+	echo ""
+	exit
+else
+	commit_des="$1"
+fi
+
 echo "========== Git Auto Push Start =========="
 
 add_file_chk=`git status | grep "nothing to commit"`
@@ -8,11 +18,6 @@ if [ "$add_file_chk" != "" ]; then
 else
 	git status
 	git add -A
-	if [ "$1" != "" ]; then
-		commit_des="$1"
-	else
-		commit_des=`git status | egrep -v '^[A-Z]|^$|\(' | tr -d ' \t'`
-	fi
 	git status
 	git commit -m "$commit_des"
 	git push origin master
