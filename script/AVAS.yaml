@@ -1,0 +1,55 @@
+# 
+# @File AVAS.yaml - Collection module Configuration File
+# 
+# @Version 0.1
+# 
+# @Options
+# - assetType
+# 	* This option is an asset identifier option.(eg OS, WAS, DB)
+# 	* Currently only OS is available.
+#
+# - assetSubType
+#	* Subsetting of ASSET_TYPE setting.(eg LINUX, AIX, HP-UX)
+#	* Currently only LINUX is available.
+#
+# - assetCode
+#	* This option sets the name and scope of the item you want to diagnose.
+#	* There are three ways to set this option
+#		1. One by One.(eg U-01,U-02,U-03)
+#		2. Use '~' to specify the range.(eg U-01 ~ U-10)
+#		3. Use 'ALL' to specify the entire range.(eg U-ALL)
+# Ex)
+#	assetInfo:
+#		- OS
+#	assetSubType:
+#		- LINUX
+#	assetCode:
+#		- U-01
+#		- U-02
+#		- U-03
+#		or
+#		- U-01 ~ U-10
+#		or
+#		- U-ALL
+#	
+# 
+# @Description
+# - Set this file first to create the final collection script for each asset.
+# - Set according to the examples of the options.
+#
+
+assetInfo:
+    assetType:
+        - OS
+    assetSubType:
+        - LINUX
+    assetCode:
+        - U-01
+        - U-02
+        - U-03
+        - U-04
+        - U-01 ~ U-10
+        - U-11 ~ U-20
+        - U-21 ~ U-30
+#        - U-ALL
+#        - Uall
