@@ -24,22 +24,18 @@ def readScript(baseFileList, baseDir, codeMap = None):
 	return fullString
 
 def mergeScript(document, code, getPwd):
-	try:
-		dt = datetime.datetime.now()
-		assetType = document['assetType'][0]
-		assetSubType = document['assetSubType'][0].lower()
-		CODEDIR = os.path.join(SCRIPTDIR, assetType, assetSubType)
-		codeMap = getattr(codemapping, assetSubType + 'CodeMap')
+	dt = datetime.datetime.now()
+	assetType = document['assetType'][0]
+	assetSubType = document['assetSubType'][0].lower()
+	CODEDIR = os.path.join(SCRIPTDIR, assetType, assetSubType)
+	codeMap = getattr(codemapping, assetSubType + 'CodeMap')
 
-		libPre = readScript(LIBPREFILES, LIBDIR)
-		libPost = readScript(LIBPOSTFILE, LIBDIR)
-		codeScript = readScript(code, CODEDIR, codeMap)
-		scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0], dt.strftime("%Y%m%d%H%M%S"))
-		with open(scriptFileName, 'w') as newFile:
-			newFile.write('#!/bin/sh\n')
-			newFile.write(libPre)
-			newFile.write(codeScript)
-			newFile.write(libPost)
-
-	except Exception as err:
-		printutil.printUsage(err)
+	libPre = readScript(LIBPREFILES, LIBDIR)
+	libPost = readScript(LIBPOSTFILE, LIBDIR)
+	codeScript = readScript(code, CODEDIR, codeMap)
+	scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0], dt.strftime("%Y%m%d%H%M%S"))
+	with open(scriptFileName, 'w') as newFile:
+		newFile.write('#!/bin/sh\n')
+		newFile.write(libPre)
+		newFile.write(codeScript)
+		newFile.write(libPost)

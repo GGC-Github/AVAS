@@ -2,6 +2,7 @@
 
 linuxCodeMap = {
 	'U-01': 'linux001',
+	'U-02': 'linux002',
 	'U-03': 'linux003',
 	'U-07': 'linux007',
 	'U-08': 'linux008',

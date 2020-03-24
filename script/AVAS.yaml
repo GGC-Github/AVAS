@@ -38,7 +38,7 @@
 # - Set according to the examples of the options.
 #
 
-#assetInfo:
+assetInfo:
     assetType:
         - OS
     assetSubType:
@@ -48,7 +48,7 @@
         - U-03
         - U-07
         - U-08
-#        - U-01 ~ U-10
+        - U-01 ~ U-10
 #        - U-11 ~ U-20
 #        - U-21 ~ U-30
 #        - U-ALL
