@@ -3,6 +3,7 @@ import os
 import makescript
 import printutil
 import re
+import traceback
 
 def codeParser(codeList):
 	totalList = []
@@ -30,23 +31,14 @@ def main():
 	print('[Start Collect Module]')
 	fileName = 'AVAS.yaml'
 	getPwd = os.getcwd()
-	fullPath = getPwd + '/' + fileName
-	print('\nConfiguratin File Path : ' + fullPath)
+	fullPath = os.path.join(getPwd, fileName)
 	try:
-		if os.path.isfile(fullPath):
-			doc = printutil.readConfig(fullPath)
-			if doc is not None:
-				fullCode = codeParser(doc['assetCode'])
-				if fullCode is not None:
-					makescript.mergeScript(doc, fullCode, getPwd)
-				else:
-					printutil.printUsage('Error : Code Parser')
-			else:
-				printutil.printUsage('Error : Config Parser');
-		else:
-			printutil.printUsage('Error : Not Found AVAS.yaml File')
-	except Exception as err:
-		printutil.printUsage(err)
+		print('\nConfiguratin File Path : ' + fullPath)
+		doc = printutil.readConfig(fullPath)
+		fullCode = codeParser(doc['assetCode'])
+		makescript.mergeScript(doc, fullCode, getPwd)
+	except Exception:
+		printutil.printUsage(traceback.format_exc())
 
 if __name__ == '__main__':
 	main()

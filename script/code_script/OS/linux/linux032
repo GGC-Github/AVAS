@@ -1,6 +1,4 @@
-#!/bin/sh
-
-linux001() {
+linux032() {
 	echo "[CODE-START | $1]"
 	echo "[CODE-END   | $1]"
 }

@@ -4,8 +4,7 @@ import yaml
 
 def printUsage(strVal):
 	print("""
-* {} *
-
+{}
 [Usage]
 ====================
 assetInfo:
@@ -23,7 +22,6 @@ def readConfig(name):
 	document = yaml.load(open("AVAS.yaml", 'r'))
 	doc = document['assetInfo']
 	print("""
-
 ***** Current Configration File Settings *****
 
 TYPE : {}
@@ -31,6 +29,5 @@ SUBTYPE : {}
 CODE : {}
 
 **********************************************
-
 	""".format(doc['assetType'], doc['assetSubType'], doc['assetCode']))
 	return doc
