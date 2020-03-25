@@ -1,4 +1,42 @@
 linux001() {
-	echo "[CODE-START | $1]"
-	echo "[CODE-END   | $1]"
+	code=$1
+	xml_infoElement_tag_start $code
+
+	xml_colInfoList_tag_start
+
+	get_ssh_ps=`ps -ef | grep -v 'grep' | grep 'sshd'`
+	if [ "$get_ssh_ps" != "" ]; then
+		xml_command_write "PS_SSH" "$get_ssh_ps"
+	fi
+	get_telnet_ps=`ps -ef | grep -v 'grep' | grep 'telnet'`
+	if [ "$get_telnet_ps" != "" ]; then
+		xml_command_write "PS_TELNET" "$get_telnet_ps"
+	fi
+
+	if [ "$systemctl_cmd" != "" ]; then
+		get_ssh_service=`$systemctl_cmd list-units --type service | egrep '(ssh|sshd)\.service' | sed -e 's/^ *//g' -e 's/^ *//g' | tr -s " \t"`
+		if [ "$get_ssh_service" != "" ]; then
+			xml_command_write "SYSTEMCTL_SSH" "$get_ssh_service"
+		fi
+	fi
+
+	if [ "$port_cmd" != "" ]; then
+		get_ssh_port=`$port_cmd -na | grep "tcp" | grep "LISTEN" | grep ':22[ \t]'`
+		if [ "$get_ssh_port" != "" ]; then
+			xml_command_write "PORT_SSH" "$get_ssh_port"
+		fi
+		get_telnet_port=`$port_cmd -na | grep "tcp" | grep "LISTEN" | grep ':23[ \t]'`
+		if [ "$get_telnet_port" != "" ]; then
+			xml_command_write "PORT_TELNET" "$get_telnet_port"
+		fi
+	fi
+
+	xml_fileInfo_write "/etc/ssh/sshd_config"
+	xml_fileInfo_write "/etc/pam.d/remote"
+	xml_fileInfo_write "/etc/pam.d/login"
+	xml_fileInfo_write "/etc/securetty"
+
+	xml_colInfoList_tag_end
+
+	xml_infoElement_tag_end
 }

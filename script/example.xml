@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<!-- System Information Element -->
+	<sysInfo>
+		<osType></osType>
+		<osName></osName>
+		<osVersion></osVersion>
+		<osKernelVersion></osKernelVersion>
+		<processInfo><![CDATA[
+			
+		]]></processInfo>
+		<portInfo><![CDATA[
+			
+		]]></portInfo>
+	</sysInfo>
+<!-- Collection Category Information Element -->
+	<infoElementList>
+		<infoElement code="U-01">
+			<colInfoList>
+				<command><![CDATA[PS_SSH]]></command>
+				<command><![CDATA[PS_TELNET]]></command>
+				<command><![CDATA[PORT_SSH]]></command>
+				<command><![CDATA[PORT_TELNET]]></command>
+				<fileName><![CDATA[/etc/ssh/sshd_config]]></fileName>
+				<fileName><![CDATA[/etc/pam.d/common-auth]]></fileName>
+				<fileName><![CDATA[/etc/securetty]]></fileName>
+			</colInfoList>
+		</infoElement>
+		<infoElement code="U-03">
+			<colInfoList>
+				<command><![CDATA[ ]]></command>
+				<command><![CDATA[ ]]></command>
+				<fileName><![CDATA[ ]]></fileName>
+				<fileName><![CDATA[ ]]></fileName>
+			</colInfoList>
+		</infoElement>
+	</infoElementList>
+<!-- Collection Category Data Information Element -->
+	<dataElementList>
+		<commandList>
+			<commandCode code="U-01">
+				<commandElement name="PS_SSH"><![CDATA[
+				]]></commandElement>
+				<commandElement name="PS_TELNET"><![CDATA[
+				]]></commandElement>
+				<commandElement name="PORT_SSH"><![CDATA[
+				]]></commandElement>
+				<commandElement name="PORT_TELNET"><![CDATA[
+				]]></commandElement>
+			</commandCode>
+		</commandList>
+		<fileList>
+			<fileInfo>
+				<filePath><![CDATA[/etc/ssh/sshd_config]]></filePath>
+				<fileStat><![CDATA[]]></fileStat>
+				<fileData><![CDATA[File Content or File Permission]]></fileData>
+			</fileInfo>
+			<fileInfo>
+				<filePath><![CDATA[/etc/pam.d/common-auth]]></filePath>
+				<fileStat><![CDATA[]]></fileStat>
+				<fileData><![CDATA[File Content or File Permission]]></fileData>
+			</fileInfo>
+			<fileInfo>
+				<filePath><![CDATA[/etc/securetty]]></filePath>
+				<fileStat><![CDATA[]]></fileStat>
+				<fileData><![CDATA[File Content or File Permission]]></fileData>
+			</fileInfo>
+		</fileList>
+	</dataElementList>
+</root>

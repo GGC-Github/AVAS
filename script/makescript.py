@@ -7,7 +7,7 @@ import os
 
 LIBDIR = os.path.join(os.getcwd(), 'lib_script')
 SCRIPTDIR = os.path.join(os.getcwd(), 'code_script')
-LIBPREFILES = ['lib_xml.inc', 'lib_encode.inc', 'lib_preprocess.inc']
+LIBPREFILES = ['lib_preprocess.inc', 'lib_xml.inc', 'lib_encode.inc']
 LIBPOSTFILE = ['lib_postprocess.inc']
 
 def readScript(baseFileList, baseDir, codeMap = None):
@@ -16,10 +16,14 @@ def readScript(baseFileList, baseDir, codeMap = None):
 		if codeMap is None:
 			fullFilePath = os.path.join(baseDir, baseFile)
 		else:
-			fullFilePath = os.path.join(baseDir, codeMap[baseFile])
+			fullFilePath = os.path.join(baseDir, codeMap[baseFile][0])
 		with open(fullFilePath, 'r') as f:
 			data = ''.join([line for line in f.readlines() if line[0] != '#'])
-			fullString += data
+			if codeMap is None:
+				fullString += data
+			else:
+				fullString += data
+				fullString += codeMap[baseFile][1] + '\n'
 
 	return fullString
 

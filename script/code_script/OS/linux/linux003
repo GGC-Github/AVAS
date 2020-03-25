@@ -1,4 +1,16 @@
 linux003() {
-	echo "[CODE-START | $1]"
-	echo "[CODE-END   | $1]"
+	code=$1
+	xml_infoElement_tag_start $code
+
+	xml_colInfoList_tag_start
+
+	xml_fileInfo_write "/etc/pam.d/system-auth"
+	xml_fileInfo_write "/etc/pam.d/password-mauth"
+	xml_fileInfo_write "/etc/pam.d/common-auth"
+	xml_fileInfo_write "/etc/pam.d/common-account"
+
+	xml_colInfoList_tag_end
+
+	xml_infoElement_tag_end
+
 }
