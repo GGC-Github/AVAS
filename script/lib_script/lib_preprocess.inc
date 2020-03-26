@@ -7,7 +7,6 @@
 # @version 0.0.1
 #
 #############################################################################################
-
 ##### 스크립트 실행 시 언어 설정
 lang_check=`locale -a 2>/dev/null | grep "en_US" | egrep -i "(utf8|utf-8)"`
 if [ "$lang_check" = "" ]; then
@@ -34,6 +33,7 @@ fi
 
 ##### 수집 파일 지정
 date_tmp=`date +"%Y%m%d%H%M"`
-RESULT_COLLECT_FILE="result_collect_$date_tmp.xml"
-RESULT_CMD_DATA_FILE="result_command_data_$date_tmp.xml"
-RESULT_FILE_DATA_FILE="result_file_data_$date_tmp.xml"
+SCRIPT_EXECUTE_PATH=`pwd`
+RESULT_COLLECT_FILE="$SCRIPT_EXECUTE_PATH/result_collect_$date_tmp.xml"
+RESULT_CMD_DATA_FILE="$SCRIPT_EXECUTE_PATH/result_command_data_$date_tmp.xml"
+RESULT_FILE_DATA_FILE="$SCRIPT_EXECUTE_PATH/result_file_data_$date_tmp.xml"

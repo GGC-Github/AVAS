@@ -1,8 +1,8 @@
 linux001() {
 	code=$1
-	xml_infoElement_tag_start $code
+	xml_infoElement_tag_start "$code"
 
-	xml_colInfoList_tag_start
+	xml_commandCode_tag_start "$code"
 
 	get_ssh_ps=`ps -ef | grep -v 'grep' | grep 'sshd'`
 	if [ "$get_ssh_ps" != "" ]; then
@@ -31,12 +31,13 @@ linux001() {
 		fi
 	fi
 
+	xml_commandCode_tag_end
+
 	xml_fileInfo_write "/etc/ssh/sshd_config"
 	xml_fileInfo_write "/etc/pam.d/remote"
 	xml_fileInfo_write "/etc/pam.d/login"
 	xml_fileInfo_write "/etc/securetty"
 
-	xml_colInfoList_tag_end
-
 	xml_infoElement_tag_end
 }
+

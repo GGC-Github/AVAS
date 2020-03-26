@@ -7,128 +7,83 @@
 # @version 0.0.1
 #
 #############################################################################################
-
 xml_file_header_tag() {
 	result_file=$1
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > $result_file 2>&1;
 }
 
-xml_root_tag_start() {
+xml_tag_write() {
 	result_file=$1
-	echo "<root>" >> $result_file 2>&1;
+	write_tag=$2
+	depth_space=$3
+	write_space=""
+	cnt=0
+	depth_space=`expr $depth_space '*' 4`
+	
+	while [ "$cnt" -lt "$depth_space" ]; do
+		write_space=`echo "$write_space "`
+		cnt=`expr $cnt + 1`
+	done
+
+	echo "$write_space$write_tag" >> $result_file 2>&1
 }
 
-xml_root_tag_end() {
-	result_file=$1
-	echo "</root>" >> $result_file 2>&1;
+xml_commandCode_tag_start() {
+	echo "            <commandCode code=\"$code\">" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
-xml_sysInfo_tag_start() {
-	result_file=$1
-	echo "    <sysInfo>" >> $result_file 2>&1
-}
-
-xml_sysInfo_tag_end() {
-	result_file=$1
-	echo "    </sysInfo>" >> $result_file 2>&1
-}
-
-xml_infoElementList_tag_start() {
-	result_file=$1
-	echo "    <infoElementList>" >> $result_file 2>&1
-}
-
-xml_infoElementList_tag_end() {
-	result_file=$1
-	echo "    </infoElementList>" >> $result_file 2>&1
-}
-
-xml_dataElementList_tag_start() {
-	result_file=$1
-	echo "    <dataElementList>" >> $result_file 2>&1
-}
-
-xml_dataElementList_tag_end() {
-	result_file=$1
-	echo "    </dataElementList>" >> $result_file 2>&1
-}
-
-xml_commandList_tag_start() {
-	result_file=$1
-	echo "        <commandList>" > $result_file 2>&1
-}
-
-xml_commandList_tag_end() {
-	result_file=$1
-	echo "        </commandList>" >> $result_file 2>&1
-}
-
-xml_fileList_tag_start() {
-	result_file=$1
-	echo "        <fileList>" > $result_file 2>&1
-}
-
-xml_fileList_tag_end() {
-	result_file=$1
-	echo "        </fileList>" >> $result_file 2>&1
+xml_commandCode_tag_end() {
+	echo "            </commandCode>" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
 xml_infoElement_tag_start() {
 	code=$1
 	echo "        <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
-	echo "            <commandCode code=\"$code\">" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
 xml_infoElement_tag_end() {
 	echo "        </infoElement>" >> $RESULT_COLLECT_FILE 2>&1
-	echo "            </commandCode>" >> $RESULT_CMD_DATA_FILE 2>&1
-}
-
-xml_colInfoList_tag_start() {
-	echo "            <colInfoList>" >> $RESULT_COLLECT_FILE 2>&1
-}
-
-xml_colInfoList_tag_end() {
-	echo "            </colInfoList>" >> $RESULT_COLLECT_FILE 2>&1
 }
 
 xml_command_write() {
 	name=$1
 	data=$2
 	enc_data="$data"
-	echo "                <command><![CDATA[$name]]></command>" >> $RESULT_COLLECT_FILE 2>&1
-	echo "                <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
+	echo "            <command><![CDATA[$name]]></command>" >> $RESULT_COLLECT_FILE 2>&1
+	echo "                    <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
 	echo "$enc_data" >> $RESULT_CMD_DATA_FILE 2>&1
-	echo "                ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
+	echo "                    ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
 xml_fileInfo_write() {
 	name=$1
 	contents_flag=0
-	if [ "$2" = "contents" ]; then
-		contents_flag=1
-	fi
 
 	if [ -d "$name" -o -f "$name" ]; then
-		file_stat=`ls -al $name`
-		file_data=`cat "$name" | sed -e 's/^ *//g' -e 's/^	*//g' | egrep -v '^#|^$'`
+		chksum=`echo $name | cksum | sed 's/	/ /g' | cut -d ' ' -f1`
+		echo "            <fileName><![CDATA[$name]]></fileName>" >> $RESULT_COLLECT_FILE 2>&1
 
-		echo "                <fileName><![CDATA[$name]]></fileName>" >> $RESULT_COLLECT_FILE 2>&1
+		if [ -z "`cat $RESULT_FILE_DATA_FILE | grep 'checksum=' | awk -F\"=\" '{ print $2 }' | grep \"$chksum\"`" ]; then
+			file_stat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $name`
+			file_data=`cat "$name" | sed -e 's/^ *//g' -e 's/^	*//g' | egrep -v '^#|^$'`
 
-		echo "            <fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "                <filePath><![CDATA[$name]]></filePath>" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "                <fileStat><![CDATA[$file_stat]]></fileStat>" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "                <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "$file_data" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "                ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
-		echo "            </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "            <fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "                <filePath checksum=\"$chksum\"><![CDATA[$name]]></filePath>" >> $RESULT_FILE_DATA_FILE 2>&1
+			if [ "$file_stat" != "" ]; then
+				echo "                <fileStat><![CDATA[$file_stat]]></fileStat>" >> $RESULT_FILE_DATA_FILE 2>&1
+			fi
+			echo "                <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "$file_data" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "                ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "            </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+		fi
 	fi
 }
 
 xml_sysInfo_contents() {
 	result_file=$1
 	OS_TYPE=`uname`
-	xml_sysInfo_tag_start "$result_file"
+	xml_tag_write "$result_file" "<sysInfo>" "1"
 	echo "        <osType>$OS_TYPE</osType>" >> $result_file 2>&1
 	case $OS_TYPE in
 #		AIX)
@@ -172,13 +127,5 @@ xml_sysInfo_contents() {
 		echo "$port_info" >> $result_file 2>&1
 		echo "        ]]></portInfo>" >> $result_file 2>&1
 	fi
-	xml_sysInfo_tag_end "$result_file"
+	xml_tag_write "$result_file" "</sysInfo>" "1"
 }
-
-xml_file_header_tag "$RESULT_COLLECT_FILE"
-xml_root_tag_start "$RESULT_COLLECT_FILE"
-xml_sysInfo_contents "$RESULT_COLLECT_FILE"
-xml_infoElementList_tag_start "$RESULT_COLLECT_FILE"
-
-xml_commandList_tag_start "$RESULT_CMD_DATA_FILE"
-xml_fileList_tag_start "$RESULT_FILE_DATA_FILE"

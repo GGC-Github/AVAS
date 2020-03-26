@@ -8,11 +8,13 @@
 #
 #############################################################################################
 
-xml_infoElementList_tag_end "$RESULT_COLLECT_FILE"
-xml_dataElementList_tag_start "$RESULT_COLLECT_FILE"
+xml_tag_write "$RESULT_COLLECT_FILE" "</infoElementList>" "1"
 
-xml_commandList_tag_end "$RESULT_CMD_DATA_FILE"
-xml_fileList_tag_end "$RESULT_FILE_DATA_FILE"
+xml_tag_write "$RESULT_COLLECT_FILE" "<dataElementList>" "1"
+
+xml_tag_write "$RESULT_CMD_DATA_FILE" "</commandList>" "2"
+
+xml_tag_write "$RESULT_FILE_DATA_FILE" "</fileList>" "2"
 
 ## Merge Result Files
 if [ -f "$RESULT_COLLECT_FILE" ]; then
@@ -24,8 +26,8 @@ if [ -f "$RESULT_COLLECT_FILE" ]; then
 		cat "$RESULT_FILE_DATA_FILE" >> $RESULT_COLLECT_FILE
 		rm -f "$RESULT_FILE_DATA_FILE"
 	fi
-	xml_dataElementList_tag_end "$RESULT_COLLECT_FILE"
-	xml_root_tag_end "$RESULT_COLLECT_FILE"
+	xml_tag_write "$RESULT_COLLECT_FILE" "</dataElementList>" "1"
+	xml_tag_write "$RESULT_COLLECT_FILE" "</root>" "0"
 else
 	echo "[Error] Not Found Result Files"
 fi
