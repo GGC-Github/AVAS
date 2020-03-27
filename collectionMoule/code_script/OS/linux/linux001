@@ -37,6 +37,7 @@ linux001() {
 	xml_fileInfo_write "/etc/pam.d/remote"
 	xml_fileInfo_write "/etc/pam.d/login"
 	xml_fileInfo_write "/etc/securetty"
+	xml_fileInfo_write "/home/kisec/workspace/script/test"
 
 	xml_infoElement_tag_end
 }

@@ -48,16 +48,16 @@ xml_infoElement_tag_end() {
 xml_command_write() {
 	name=$1
 	data=$2
-	enc_data="$data"
 	echo "            <command><![CDATA[$name]]></command>" >> $RESULT_COLLECT_FILE 2>&1
 	echo "                    <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
+	enc_data="`(data_cmd_encoding \"$data\")`"
 	echo "$enc_data" >> $RESULT_CMD_DATA_FILE 2>&1
 	echo "                    ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
+
 }
 
 xml_fileInfo_write() {
 	name=$1
-	contents_flag=0
 
 	if [ -d "$name" -o -f "$name" ]; then
 		chksum=`echo $name | cksum | sed 's/	/ /g' | cut -d ' ' -f1`
@@ -72,8 +72,26 @@ xml_fileInfo_write() {
 			if [ "$file_stat" != "" ]; then
 				echo "                <fileStat><![CDATA[$file_stat]]></fileStat>" >> $RESULT_FILE_DATA_FILE 2>&1
 			fi
+
+			if [ -h "$name" ]; then
+				if [ "$readlink_cmd" != "" ]; then
+					real_name=`$readlink_cmd -f "$name"`
+					if [ "$real_name" != "" ]; then
+						echo "                <fileRealPath><![CDATA[$real_name]]></fileRealPath>" >> $RESULT_FILE_DATA_FILE 2>&1
+						file_realstat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $real_name`
+						if [ "$file_realstat" != "" ]; then
+							echo "                <fileRealStat><![CDATA[$file_realstat]]></fileRealStat>" >> $RESULT_FILE_DATA_FILE 2>&1
+						fi
+					fi
+				fi
+			fi
 			echo "                <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "$file_data" >> $RESULT_FILE_DATA_FILE 2>&1
+			if [ "$real_name" != "" ]; then
+				enc_data="`(data_file_encoding \"$real_name\")`"
+			else
+				enc_data="`(data_file_encoding \"$name\")`"
+			fi
+			echo "$enc_data" >> $RESULT_FILE_DATA_FILE 2>&1
 			echo "                ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
 			echo "            </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
 		fi
@@ -112,19 +130,26 @@ xml_sysInfo_contents() {
 			fi
 			;;
 	esac
+	if [ "`command -v base64 2>/dev/null`" != "" ] || [ "`which base64 2>/dev/null`" != "" ]; then
+		ENCTYPE="base64"
+	fi
+
 	process_info=`ps -ef`
 	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT'`
 	echo "        <osName>$OS_NAME</osName>" >> $result_file 2>&1
 	echo "        <osVersion>$OS_VERSION</osVersion>" >> $result_file 2>&1
 	echo "        <osKernelVersion>$OS_KERNEL_VERSION</osKernelVersion>" >> $result_file 2>&1
+	echo "        <encType>$ENCTYPE<encType>" >> $result_file 2>&1
 	if [ "$process_info" != "" ]; then
 		echo "        <processInfo><![CDATA[" >> $result_file 2>&1
-		echo "$process_info" >> $result_file 2>&1
+		enc_process_info="`(data_cmd_encoding \"$process_info\")`"
+		echo "$enc_process_info" >> $result_file 2>&1
 		echo "        ]]></processInfo>" >> $result_file 2>&1
 	fi
 	if [ "$port_info" != "" ]; then
 		echo "        <portInfo><![CDATA[" >> $result_file 2>&1
-		echo "$port_info" >> $result_file 2>&1
+		enc_port_info="`(data_cmd_encoding \"$port_info\")`"
+		echo "$enc_port_info" >> $result_file 2>&1
 		echo "        ]]></portInfo>" >> $result_file 2>&1
 	fi
 	xml_tag_write "$result_file" "</sysInfo>" "1"

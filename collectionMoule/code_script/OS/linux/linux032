@@ -1,0 +1,33 @@
+linux032() {
+	code=$1
+	xml_infoElement_tag_start "$code"
+
+	xml_commandCode_tag_start "$code"
+
+	get_sendmail_ps=`ps -ef | grep -v 'grep' | grep 'sendmail'`
+	if [ "$get_sendmail_ps" != "" ]; then
+		xml_command_write "PS_SENDMAIL" "$get_sendmail_ps"
+	fi
+
+	if [ "$systemctl_cmd" != "" ]; then
+		get_sendmail_service=`$systemctl_cmd list-units --type service | grep 'sendmail.service' | sed -e 's/^ *//g' -e 's/^ *//g' | tr -s " \t"`
+		if [ "$get_sendmail_service" != "" ]; then
+			xml_command_write "SYSTEMCTL_SENDMAIL" "$get_sendmail_service"
+		fi
+	fi
+
+	if [ "$port_cmd" != "" ]; then
+		get_sendmail_port=`$port_cmd -na | grep "tcp" | grep "LISTEN" | grep ':25[ \t]'`
+		if [ "$get_sendmail_port" != "" ]; then
+			xml_command_write "PORT_SENDMAIL" "$get_sendmail_port"
+		fi
+	fi
+
+	xml_commandCode_tag_end
+
+	xml_fileInfo_write "/etc/sendmail.cf"
+	xml_fileInfo_write "/etc/mail/sendmail.cf"
+
+	xml_infoElement_tag_end
+
+}

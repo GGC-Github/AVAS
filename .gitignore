@@ -47,3 +47,8 @@ coverage.xml
 
 # Backup Files
 *.bak
+
+# etc Files
+*.swp
+LINUX_*.sh
+result_collect_*.xml
