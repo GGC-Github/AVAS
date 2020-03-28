@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 linuxCodeMap = {
 	'U-01': ['linux001', 'linux001 U-01'],
