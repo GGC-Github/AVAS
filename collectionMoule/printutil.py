@@ -19,7 +19,7 @@ assetInfo:
 	""".format(strVal))
 
 def readConfig(name):
-	document = yaml.load(open("AVAS.yaml", 'r'))
+	document = yaml.load(open("AVAS.yaml", 'r'), Loader=yaml.SafeLoader)
 	doc = document['assetInfo']
 	print("""
 ***** Current Configration File Settings *****
