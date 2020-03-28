@@ -52,3 +52,4 @@ coverage.xml
 *.swp
 LINUX_*.sh
 result_collect_*.xml
+only_script
