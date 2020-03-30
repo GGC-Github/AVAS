@@ -1,1 +1,1 @@
-This directory is where the Linux collection item script is located.
+# This directory is where the Linux collection item script is located.

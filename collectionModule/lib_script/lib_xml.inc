@@ -134,12 +134,13 @@ xml_sysInfo_contents() {
 		ENCTYPE="base64"
 	fi
 
-	process_info=`ps -ef`
-	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT'`
+	process_info=`ps -ef | sed -e 's/^ *//g' -e 's/^	*//g'`
+	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT' | sed -e 's/^ *//g' -e 's/^	*//g'`
+	systemctl_info=`$systemctl_cmd list-units --type service | sed -e 's/^ *//g' -e 's/^	*//g'`
 	echo "        <osName>$OS_NAME</osName>" >> $result_file 2>&1
 	echo "        <osVersion>$OS_VERSION</osVersion>" >> $result_file 2>&1
 	echo "        <osKernelVersion>$OS_KERNEL_VERSION</osKernelVersion>" >> $result_file 2>&1
-	echo "        <encType>$ENCTYPE<encType>" >> $result_file 2>&1
+	echo "        <encType>$ENCTYPE</encType>" >> $result_file 2>&1
 	if [ "$process_info" != "" ]; then
 		echo "        <processInfo><![CDATA[" >> $result_file 2>&1
 		enc_process_info="`(data_cmd_encoding \"$process_info\")`"
@@ -151,6 +152,12 @@ xml_sysInfo_contents() {
 		enc_port_info="`(data_cmd_encoding \"$port_info\")`"
 		echo "$enc_port_info" >> $result_file 2>&1
 		echo "        ]]></portInfo>" >> $result_file 2>&1
+	fi
+	if [ "$systemctl_info" != "" ]; then
+		echo "        <systemctlInfo><![CDATA[" >> $result_file 2>&1
+		enc_systemctl_info="`(data_cmd_encoding \"$systemctl_info\")`"
+		echo "$enc_systemctl_info" >> $result_file 2>&1
+		echo "        ]]></systemctlInfo>" >> $result_file 2>&1
 	fi
 	xml_tag_write "$result_file" "</sysInfo>" "1"
 }

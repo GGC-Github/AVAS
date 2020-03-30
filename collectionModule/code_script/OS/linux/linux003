@@ -3,7 +3,7 @@ linux003() {
 	xml_infoElement_tag_start $code
 
 	xml_fileInfo_write "/etc/pam.d/system-auth"
-	xml_fileInfo_write "/etc/pam.d/password-mauth"
+	xml_fileInfo_write "/etc/pam.d/password-auth"
 	xml_fileInfo_write "/etc/pam.d/common-auth"
 	xml_fileInfo_write "/etc/pam.d/common-account"
 

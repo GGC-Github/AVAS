@@ -1,1 +1,1 @@
-This directory is where the HP-UX collection item script is located.
+# This directory is where the HP-UX collection item script is located.

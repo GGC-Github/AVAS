@@ -16,23 +16,19 @@
 <!-- Collection Category Information Element -->
 	<infoElementList>
 		<infoElement code="U-01">
-			<colInfoList>
-				<command><![CDATA[PS_SSH]]></command>
-				<command><![CDATA[PS_TELNET]]></command>
-				<command><![CDATA[PORT_SSH]]></command>
-				<command><![CDATA[PORT_TELNET]]></command>
-				<fileName><![CDATA[/etc/ssh/sshd_config]]></fileName>
-				<fileName><![CDATA[/etc/pam.d/common-auth]]></fileName>
-				<fileName><![CDATA[/etc/securetty]]></fileName>
-			</colInfoList>
+			<command><![CDATA[PS_SSH]]></command>
+			<command><![CDATA[PS_TELNET]]></command>
+			<command><![CDATA[PORT_SSH]]></command>
+			<command><![CDATA[PORT_TELNET]]></command>
+			<fileName><![CDATA[/etc/ssh/sshd_config]]></fileName>
+			<fileName><![CDATA[/etc/pam.d/common-auth]]></fileName>
+			<fileName><![CDATA[/etc/securetty]]></fileName>
 		</infoElement>
 		<infoElement code="U-03">
-			<colInfoList>
-				<command><![CDATA[ ]]></command>
-				<command><![CDATA[ ]]></command>
-				<fileName><![CDATA[ ]]></fileName>
-				<fileName><![CDATA[ ]]></fileName>
-			</colInfoList>
+			<command><![CDATA[ ]]></command>
+			<command><![CDATA[ ]]></command>
+			<fileName><![CDATA[ ]]></fileName>
+			<fileName><![CDATA[ ]]></fileName>
 		</infoElement>
 	</infoElementList>
 <!-- Collection Category Data Information Element -->

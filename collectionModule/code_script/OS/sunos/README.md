@@ -1,1 +1,1 @@
-This directory is where the SunOS collection item script is located.
+# This directory is where the SunOS collection item script is located.
