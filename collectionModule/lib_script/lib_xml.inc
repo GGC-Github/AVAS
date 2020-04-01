@@ -38,22 +38,23 @@ xml_commandCode_tag_end() {
 
 xml_infoElement_tag_start() {
 	code=$1
-	echo "        <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
+#	echo "        <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
+	echo "    <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
 }
 
 xml_infoElement_tag_end() {
-	echo "        </infoElement>" >> $RESULT_COLLECT_FILE 2>&1
+	echo "    </infoElement>" >> $RESULT_COLLECT_FILE 2>&1
 }
 
 xml_command_write() {
 	name=$1
 	data=$2
-	echo "            <command><![CDATA[$name]]></command>" >> $RESULT_COLLECT_FILE 2>&1
-	echo "                    <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
+	echo "            <command name=\"$name\"><![CDATA[" >> $RESULT_COLLECT_FILE 2>&1
 	enc_data="`(data_cmd_encoding \"$data\")`"
-	echo "$enc_data" >> $RESULT_CMD_DATA_FILE 2>&1
-	echo "                    ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
-
+	echo "$enc_data" >> $RESULT_COLLECT_FILE 2>&1
+	echo "            ]]></command>" >> $RESULT_COLLECT_FILE 2>&1
+#	echo "                    <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
+#	echo "                    ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
 xml_fileInfo_write() {
@@ -67,33 +68,33 @@ xml_fileInfo_write() {
 			file_stat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $name`
 			file_data=`cat "$name" | sed -e 's/^ *//g' -e 's/^	*//g' | egrep -v '^#|^$'`
 
-			echo "            <fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "                <filePath checksum=\"$chksum\"><![CDATA[$name]]></filePath>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "        <fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "            <filePath checksum=\"$chksum\"><![CDATA[$name]]></filePath>" >> $RESULT_FILE_DATA_FILE 2>&1
 			if [ "$file_stat" != "" ]; then
-				echo "                <fileStat><![CDATA[$file_stat]]></fileStat>" >> $RESULT_FILE_DATA_FILE 2>&1
+				echo "            <fileStat><![CDATA[$file_stat]]></fileStat>" >> $RESULT_FILE_DATA_FILE 2>&1
 			fi
 
 			if [ -h "$name" ]; then
 				if [ "$readlink_cmd" != "" ]; then
 					real_name=`$readlink_cmd -f "$name"`
 					if [ "$real_name" != "" ]; then
-						echo "                <fileRealPath><![CDATA[$real_name]]></fileRealPath>" >> $RESULT_FILE_DATA_FILE 2>&1
+						echo "            <fileRealPath><![CDATA[$real_name]]></fileRealPath>" >> $RESULT_FILE_DATA_FILE 2>&1
 						file_realstat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $real_name`
 						if [ "$file_realstat" != "" ]; then
-							echo "                <fileRealStat><![CDATA[$file_realstat]]></fileRealStat>" >> $RESULT_FILE_DATA_FILE 2>&1
+							echo "            <fileRealStat><![CDATA[$file_realstat]]></fileRealStat>" >> $RESULT_FILE_DATA_FILE 2>&1
 						fi
 					fi
 				fi
 			fi
-			echo "                <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "            <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
 			if [ "$real_name" != "" ]; then
 				enc_data="`(data_file_encoding \"$real_name\")`"
 			else
 				enc_data="`(data_file_encoding \"$name\")`"
 			fi
 			echo "$enc_data" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "                ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "            </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "            ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
+			echo "        </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
 		fi
 	fi
 }

@@ -17,10 +17,11 @@ def xmlResultFileParser(resultFile):
 	doc = ET.parse(resultFile)
 	root = doc.getroot()
 	sysInfo = { info.tag:info.text if info.tag != 'processInfo' and info.tag != 'portInfo' else base64Decode(info.text) for info in root.find("sysInfo").getchildren() }
-	infoElementList = root.find("infoElementList").getchildren()
-	commandList = root.find("dataElementList/commandList").getchildren()
 
-	fileList = root.findall("dataElementList/fileList/fileInfo")
+	infoElementList = root.find("infoElementList").getchildren()
+	commandList = root.find("commandList").getchildren()
+
+	fileList = root.findall("fileList/fileInfo")
 	for fileElement in fileList:
 		fileCollectList.update( {fileElement.find('filePath').text : { data.tag:base64Decode(data.text) if data.tag == 'fileData' else data.text for data in fileElement.getchildren() if data.tag != 'filePath'}})
 	
