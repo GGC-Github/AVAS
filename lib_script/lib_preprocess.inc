@@ -39,7 +39,6 @@ fi
 date_tmp=`date +"%Y%m%d%H%M"`
 SCRIPT_EXECUTE_PATH=`pwd`
 RESULT_COLLECT_FILE="$SCRIPT_EXECUTE_PATH/result_collect_$date_tmp.xml"
-#RESULT_CMD_DATA_FILE="$SCRIPT_EXECUTE_PATH/result_command_data_$date_tmp.xml"
 RESULT_FILE_DATA_FILE="$SCRIPT_EXECUTE_PATH/result_file_data_$date_tmp.xml"
 
 ##### root 계정으로의 실행 여부 확인

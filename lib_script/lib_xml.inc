@@ -28,17 +28,8 @@ xml_tag_write() {
 	echo "$write_space$write_tag" >> $result_file 2>&1
 }
 
-xml_commandCode_tag_start() {
-	echo "            <commandCode code=\"$code\">" >> $RESULT_CMD_DATA_FILE 2>&1
-}
-
-xml_commandCode_tag_end() {
-	echo "            </commandCode>" >> $RESULT_CMD_DATA_FILE 2>&1
-}
-
 xml_infoElement_tag_start() {
 	code=$1
-#	echo "        <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
 	echo "    <infoElement code=\"$code\">" >> $RESULT_COLLECT_FILE 2>&1
 }
 
@@ -53,8 +44,6 @@ xml_command_write() {
 	enc_data="`(data_cmd_encoding \"$data\")`"
 	echo "$enc_data" >> $RESULT_COLLECT_FILE 2>&1
 	echo "            ]]></command>" >> $RESULT_COLLECT_FILE 2>&1
-#	echo "                    <commandElement name=\"$name\"><![CDATA[" >> $RESULT_CMD_DATA_FILE 2>&1
-#	echo "                    ]]></commandElement>" >> $RESULT_CMD_DATA_FILE 2>&1
 }
 
 xml_fileInfo_write() {

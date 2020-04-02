@@ -13,9 +13,5 @@ xml_tag_write "$RESULT_COLLECT_FILE" "<root>" "0"
 
 xml_sysInfo_contents "$RESULT_COLLECT_FILE"
 
-#xml_tag_write "$RESULT_COLLECT_FILE" "<infoElementList>" "1"
-
-#xml_tag_write "$RESULT_CMD_DATA_FILE" "<commandList>" "2"
-
 xml_tag_write "$RESULT_FILE_DATA_FILE" "<fileList>" "1"
 
