@@ -2,14 +2,10 @@
 import os
 import traceback
 import codemapping
+import codeanalysisFunc
 import utility
 
-class InfoAnalysis:
-	fileCollectList = {}
-	infoCollectList = {}
-	sysInfo = {}
-
-def main():
+if __name__ == '__main__':
 	try:
 		print('[ Start Analysis Module ]\n')
 		fullPath = os.path.join(os.getcwd(), 'inputResult')
@@ -17,16 +13,19 @@ def main():
 		fullFileList = os.listdir(fullPath)
 		print('[ Result File List ]\n')
 		for resultFile in fullFileList:
-			a = InfoAnalysis()
-			utility.xmlResultFileParser(os.path.join(fullPath, resultFile), a)
-			for code in a.infoCollectList.keys():
-				a.infoCollectList[code]['analyFunc']()
-			a.fileCollectList.clear()
-			a.infoCollectList.clear()
-			a.sysInfo.clear()
-			
+			fileList, infoList, sysList = utility.xmlResultFileParser(os.path.join(fullPath, resultFile))
+			for key in sorted(infoList.keys()):
+				codeMap = getattr(codemapping, sysList['osType'].lower() + key[0] + 'codeMap')
+				code = codeMap[key][0]
+				a = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList, infoList[key], sysList)
+				tmp = a.analysisFunc()
+				if tmp is not None:
+					print(tmp[0] + '\n' + tmp[1])
+					if tmp[2] is not None:
+						for key in tmp[2].keys():
+							print(tmp[2][key])
+				else:
+					print(tmp)
+
 	except Exception:
 		print(traceback.format_exc())
-
-if __name__ == '__main__':
-	main()

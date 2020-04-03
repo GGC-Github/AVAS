@@ -2,10 +2,11 @@
 
 import os
 import datetime
-import xml.etree.ElementTree as useXmlParser 
-import yaml
 import base64
+import yaml
+import xml.etree.ElementTree as useXmlParser 
 import codemapping
+import re
 
 LIBDIR = os.path.join(os.getcwd(), 'lib_script')
 SCRIPTDIR = os.path.join(os.getcwd(), 'code_script')
@@ -16,21 +17,24 @@ LIBPOSTFILE = ['lib_postprocess.inc']
 def base64Decode(setString):
 	return str(base64.b64decode(setString), encoding='utf-8')
 
-def xmlResultFileParser(resultFile, a):
+def xmlResultFileParser(resultFile):
 	print(resultFile)
 	doc = useXmlParser.parse(resultFile)
 	root = doc.getroot()
-	a.sysInfo = { info.tag:base64Decode(info.text) if info.tag in ['processInfo' ,'portInfo' ,'systemctlInfo'] else info.text for info in root.find("sysInfo").getchildren() }
+	sysInfo = { info.tag:base64Decode(info.text) if info.tag in ['processInfo' ,'portInfo' ,'systemctlInfo'] else info.text for info in root.find("sysInfo").getchildren() }
+	infoCollectList = {}
+	fileCollectList = {}
 
-	codeMap = getattr(codemapping, a.sysInfo['osType'].lower() + 'CodeMap')
 	infoElementList = root.findall("infoElement")
 	for infoElement in infoElementList:
-		a.infoCollectList.update( { infoElement.attrib['code'] : { 'analyFunc' : codeMap[infoElement.attrib['code']][2] } } )
-		a.infoCollectList[infoElement.attrib['code']].update( { data.attrib['name'] : base64Decode(data.text) for data in infoElement if data.tag in 'command' } )
+		infoCollectList.update( { infoElement.attrib['code'] : None } )
+		infoCollectList.update( { infoElement.attrib['code'] : { data.attrib['name'] : base64Decode(data.text) } for data in infoElement if data.tag in 'command' } )
 
 	fileList = root.findall("fileList/fileInfo")
 	for fileElement in fileList:
-		a.fileCollectList.update( {fileElement.find('filePath').text : { data.tag:base64Decode(data.text) if data.tag == 'fileData' else data.text for data in fileElement.getchildren() if data.tag != 'filePath'}})
+		fileCollectList.update( {fileElement.find('filePath').text : { data.tag:base64Decode(data.text) if data.tag == 'fileData' else data.text for data in fileElement.getchildren() if data.tag != 'filePath'}})
+
+	return fileCollectList, infoCollectList, sysInfo
 
 def codeParser(codeList):
 	totalList = []
@@ -72,7 +76,7 @@ def mergeScript(document, code, getPwd):
 	assetType = document['assetType'][0]
 	assetSubType = document['assetSubType'][0].lower()
 	CODEDIR = os.path.join(SCRIPTDIR, assetType, assetSubType)
-	codeMap = getattr(codemapping, assetSubType + 'CodeMap')
+	codeMap = getattr(codemapping, assetSubType + code[0][0] + 'codeMap')
 
 	libPre = readScript(LIBPREFILES, LIBDIR)
 	libPost = readScript(LIBPOSTFILE, LIBDIR)
