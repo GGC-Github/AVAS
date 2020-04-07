@@ -70,7 +70,7 @@ class analysisBase(metaclass=ABCMeta):
 				if parseKey == 'exist':
 					result = 0
 				elif parseKey == '!exist':
-					self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
+					self.stat.update( { fileName : self.stat[fileName].replace('\n', '(!)\n') } )
 					result = 1
 
 		return result	
@@ -84,11 +84,11 @@ class analysisBase(metaclass=ABCMeta):
 				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
 		elif compType == '>':
-			if reg and int(reg[0]) > comValue:
+			if reg and int(reg[0]) > compValue:
 				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
-		elif comType == '=':
-			if reg and int(reg[0]) == comValue:
+		elif compType == '=':
+			if reg and int(reg[0]) == compValue:
 				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
 

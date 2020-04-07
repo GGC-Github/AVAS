@@ -7,6 +7,7 @@ import xml.etree.ElementTree as useXmlParser
 import codemapping
 import re
 import operator
+import stat
 
 LIBDIR = os.path.join(os.getcwd(), 'lib_script')
 SCRIPTDIR = os.path.join(os.getcwd(), 'code_script')
@@ -100,7 +101,7 @@ def mergeScript(document, code, getPwd):
 	codeScript = readScript(code, CODEDIR, codeMap)
 	scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0],\
 					dt.strftime("%Y%m%d%H%M%S"))
-	with open(scriptFileName, 'w', encoding='UTF-8') as newFile:
+	with open(scriptFileName, 'w', encoding='UTF-8', newline='\n') as newFile:
 		newFile.write('#!/bin/sh\n')
 		newFile.write(libPre)
 		newFile.write(codeScript)
@@ -109,7 +110,7 @@ def mergeScript(document, code, getPwd):
 			newFile.write(codeMap[codekey][1] + '\n')
 		newFile.write(libPost)
 	
-	os.chmod(scriptFileName, 0o755)
+	os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
 def printUsage(strVal):
 	print("""

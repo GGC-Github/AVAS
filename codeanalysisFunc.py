@@ -23,6 +23,9 @@ class analysislinux001(codeanalysisBase.analysisBase):
 							resultCnt += self.dataStrGetValue('/etc/ssh/sshd_config',\
 															'^[\t ]*PermitRootLogin\s(\S+)',\
 															'no', '!')
+						else:
+							self.stat.update( { '/etc/ssh/sshd_config' : \
+											'PermitRootLogin Not Found Configuration' } )
 					else:
 						self.stat.update( { '/etc/ssh/sshd_config' : \
 											'Not Found Configuration File(!)' } )
