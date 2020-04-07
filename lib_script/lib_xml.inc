@@ -40,7 +40,7 @@ xml_infoElement_tag_end() {
 xml_command_write() {
 	name=$1
 	data=$2
-	echo "            <command name=\"$name\"><![CDATA[" >> $RESULT_COLLECT_FILE 2>&1
+	echo "        <command name=\"$name\"><![CDATA[" >> $RESULT_COLLECT_FILE 2>&1
 	enc_data="`(data_cmd_encoding \"$data\")`"
 	echo "$enc_data" >> $RESULT_COLLECT_FILE 2>&1
 	echo "            ]]></command>" >> $RESULT_COLLECT_FILE 2>&1
@@ -51,7 +51,7 @@ xml_fileInfo_write() {
 
 	if [ -d "$name" -o -f "$name" ]; then
 		chksum=`echo $name | cksum | sed 's/	/ /g' | cut -d ' ' -f1`
-		echo "            <fileName><![CDATA[$name]]></fileName>" >> $RESULT_COLLECT_FILE 2>&1
+		echo "        <fileName><![CDATA[$name]]></fileName>" >> $RESULT_COLLECT_FILE 2>&1
 
 		if [ -z "`cat $RESULT_FILE_DATA_FILE | grep 'checksum=' | awk -F\"=\" '{ print $2 }' | grep \"$chksum\"`" ]; then
 			file_stat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $name`

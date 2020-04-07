@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import datetime
 import base64
@@ -7,12 +6,21 @@ import yaml
 import xml.etree.ElementTree as useXmlParser 
 import codemapping
 import re
+import operator
 
 LIBDIR = os.path.join(os.getcwd(), 'lib_script')
 SCRIPTDIR = os.path.join(os.getcwd(), 'code_script')
 LIBPREFILES = ['lib_preprocess.inc', 'lib_xml.inc', 'lib_encode.inc']
 LIBAUTOFILES = ['lib_autostruct.inc']
 LIBPOSTFILE = ['lib_postprocess.inc']
+OPS = {
+	'<': operator.lt,
+	'<=': operator.le,
+	'==': operator.eq,
+	'!=': operator.ne,
+	'>=': operator.ge,
+	'>': operator.gt
+}
 
 def base64Decode(setString):
 	return str(base64.b64decode(setString), encoding='utf-8')
@@ -27,8 +35,7 @@ def xmlResultFileParser(resultFile):
 
 	infoElementList = root.findall("infoElement")
 	for infoElement in infoElementList:
-		infoCollectList.update( { infoElement.attrib['code'] : None } )
-		infoCollectList.update( { infoElement.attrib['code'] : { data.attrib['name'] : base64Decode(data.text) } for data in infoElement if data.tag in 'command' } )
+		infoCollectList.update( { infoElement.attrib['code'] : { data.attrib['name'] : base64Decode(data.text) for data in infoElement if data.tag in 'command' } } )
 
 	fileList = root.findall("fileList/fileInfo")
 	for fileElement in fileList:

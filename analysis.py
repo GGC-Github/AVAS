@@ -14,18 +14,13 @@ if __name__ == '__main__':
 		print('[ Result File List ]\n')
 		for resultFile in fullFileList:
 			fileList, infoList, sysList = utility.xmlResultFileParser(os.path.join(fullPath, resultFile))
+			analysisRes = []
 			for key in sorted(infoList.keys()):
 				codeMap = getattr(codemapping, sysList['osType'].lower() + key[0] + 'codeMap')
 				code = codeMap[key][0]
 				a = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList, infoList[key], sysList)
-				tmp = a.analysisFunc()
-				if tmp is not None:
-					print(tmp[0] + '\n' + tmp[1])
-					if tmp[2] is not None:
-						for key in tmp[2].keys():
-							print(tmp[2][key])
-				else:
-					print(tmp)
+				analysisRes.append(a.analysisFunc())
+			print(analysisRes)
 
 	except Exception:
 		print(traceback.format_exc())
