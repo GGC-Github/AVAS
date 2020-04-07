@@ -29,17 +29,25 @@ def xmlResultFileParser(resultFile):
 	print(resultFile)
 	doc = useXmlParser.parse(resultFile)
 	root = doc.getroot()
-	sysInfo = { info.tag:base64Decode(info.text) if info.tag in ['processInfo' ,'portInfo' ,'systemctlInfo'] else info.text for info in root.find("sysInfo").getchildren() }
+	sysInfo = { info.tag:base64Decode(info.text) if info.tag in\
+				['processInfo' ,'portInfo' ,'systemctlInfo'] else info.text\
+				for info in root.find("sysInfo").getchildren() }
 	infoCollectList = {}
 	fileCollectList = {}
 
 	infoElementList = root.findall("infoElement")
 	for infoElement in infoElementList:
-		infoCollectList.update( { infoElement.attrib['code'] : { data.attrib['name'] : base64Decode(data.text) for data in infoElement if data.tag in 'command' } } )
+		infoCollectList.update( { infoElement.attrib['code'] :\
+								{ data.attrib['name'] : base64Decode(data.text)\
+								for data in infoElement if data.tag in 'command' } } )
 
 	fileList = root.findall("fileList/fileInfo")
 	for fileElement in fileList:
-		fileCollectList.update( {fileElement.find('filePath').text : { data.tag:base64Decode(data.text) if data.tag == 'fileData' else data.text for data in fileElement.getchildren() if data.tag != 'filePath'}})
+		fileCollectList.update( {fileElement.find('filePath').text :\
+								{ data.tag:base64Decode(data.text) \
+								if data.tag == 'fileData' else data.text\
+								for data in fileElement.getchildren()\
+								if data.tag != 'filePath'}})
 
 	return fileCollectList, infoCollectList, sysInfo
 
@@ -51,7 +59,8 @@ def codeParser(codeList):
 			return None
 
 		if len(reg) == 2:
-			listTmp = ["{}-{:02}".format(reg[0][0], x) for x in range(int(reg[0][1]), int(reg[1][1]) + 1)]
+			listTmp = ["{}-{:02}".format(reg[0][0], x) for x in range(int(reg[0][1]),\
+						int(reg[1][1]) + 1)]
 			totalList.extend(listTmp)
 		elif len(reg) == 1 and reg[0][1].lower() == 'all':
 			totalList = ["{}-{:02}".format(reg[0][0], x) for x in range(1, 73 + 1)]
@@ -89,7 +98,8 @@ def mergeScript(document, code, getPwd):
 	libPost = readScript(LIBPOSTFILE, LIBDIR)
 	libAutoStruct = readScript(LIBAUTOFILES, LIBDIR)
 	codeScript = readScript(code, CODEDIR, codeMap)
-	scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0], dt.strftime("%Y%m%d%H%M%S"))
+	scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0],\
+					dt.strftime("%Y%m%d%H%M%S"))
 	with open(scriptFileName, 'w') as newFile:
 		newFile.write('#!/bin/sh\n')
 		newFile.write(libPre)
@@ -130,3 +140,9 @@ CODE : {}
 **********************************************
 	""".format(doc['assetType'], doc['assetSubType'], doc['assetCode']))
 	return doc
+
+def fileStatSetup(setString):	
+	data = "[ 권한 = {}({}), 소유자 = {}({}), 소유그룹 = {}({}) ]".format(\
+			setString[0], setString[1], setString[5], setString[6],\
+			setString[7], setString[8])
+	return data

@@ -9,6 +9,7 @@ class analysisBase(metaclass=ABCMeta):
 		self.infoList = infoList
 		self.sysList = sysList
 		self.stat = {}
+		self.fullString = [ self.code, '양호', {} ]
 
 	@abstractmethod
 	def analysisFunc(self):
@@ -18,7 +19,7 @@ class analysisBase(metaclass=ABCMeta):
 		keyValue = "{}{}".format(getValue, 'PS')
 		self.stat.update( { keyValue : ''.join("{} Not found Process\n".format(getValue)) })
 		flag = 0
-		if self.sysList['processInfo'] is not None:
+		if 'processInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line) \
 						for line in self.sysList['processInfo'].split('\n') \
 						if getValue in line)
@@ -32,7 +33,7 @@ class analysisBase(metaclass=ABCMeta):
 		keyValue = "{}{}".format(srvName, 'PORT')
 		self.stat.update( { keyValue : ''.join("{} Not found Port\n".format(srvName)) })
 		flag = 0
-		if self.sysList['portInfo'] is not None:
+		if 'portInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line) \
 						for line in self.sysList['portInfo'].split('\n') \
 						if getValue in line)
@@ -46,7 +47,7 @@ class analysisBase(metaclass=ABCMeta):
 		keyValue = "{}{}".format(srvName, 'SYS')
 		self.stat.update( { keyValue : ''.join("{} Not found Service\n".format(srvName)) })
 		flag = 0
-		if self.sysList['systemctlInfo'] is not None:
+		if 'systemctlInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line) \
 						for line in self.sysList['systemctlInfo'].split('\n') \
 						for value in getValue
@@ -69,7 +70,7 @@ class analysisBase(metaclass=ABCMeta):
 				if parseKey == 'exist':
 					result = 0
 				elif parseKey == '!exist':
-					self.stat.update( { fileName : ''.join("{}(!)\n".format(line) for line in reg) } )
+					self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 					result = 1
 
 		return result	
@@ -80,15 +81,15 @@ class analysisBase(metaclass=ABCMeta):
 		reg = re.findall(com, self.stat[name])
 		if compType == '<':
 			if reg and int(reg[0]) < compValue:
-				self.stat.update( { name : ''.join("{}(!)\n".format(line) for line in self.stat[name]) } )
+				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
 		elif compType == '>':
 			if reg and int(reg[0]) > comValue:
-				self.stat.update( { name : ''.join("{}(!)\n".format(line) for line in self.stat[name]) } )
+				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
 		elif comType == '=':
 			if reg and int(reg[0]) == comValue:
-				self.stat.update( { name : ''.join("{}(!)\n".format(line) for line in self.stat[name]) } )
+				self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
 				result = 1
 
 		return result
@@ -97,14 +98,15 @@ class analysisBase(metaclass=ABCMeta):
 		result = 0
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[name])
-		if compType == '!':
-			if reg and reg[0] != compValue:
-				self.stat.update( { name : ''.join("{}(!)\n".format(line) for line in self.stat[name]) } )
-				result = 1
-		elif compType == '=':
-			if reg and reg[0] == compValue:
-				self.stat.update( { name : ''.join("{}(!)\n".format(line) for line in self.stat[name]) } )
-				result = 1
+		if reg:
+			if compType == '!':
+				if  compValue not in reg[0]:
+					self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
+					result = 1
+			elif compType == '=':
+				if compValue in reg[0]:
+					self.stat.update( { name : self.stat[name].replace('\n', '(!)\n') } )
+					result = 1
 
 		return result
 
@@ -112,14 +114,16 @@ class analysisBase(metaclass=ABCMeta):
 		cmpOper = utility.OPS[compType]
 		if 'fileRealStat' in self.fileList[fileName].keys():
 			fileStat = self.fileList[fileName]['fileRealStat'].split('|')
-#			self.stat.update( { fileName : "[ 권한 = {}({}), 소유자 = {}({}), 소유그룹 = {}({}) ]".format(fileStat[1], fileStat[0], fileStat[]) } )
-			self.stat.update( { fileName : self.fileList[fileName]['fileRealStat']} )
-			self.stat.update( { fileName : self.fileList[fileName]['fileStat']} )
+			self.stat.update( { fileName : utility.fileStatSetup(fileStat) } )
+			self.stat.update( { fileName : utility.fileStatSetup(\
+											self.fileList[fileName]['fileStat']\
+											.split('|')) } )
 		else:
 			fileStat = self.fileList[fileName]['fileStat'].split('|')
-			self.stat.update( { fileName : self.fileList[fileName]['fileStat']} )
+			self.stat.update( { fileName : utility.fileStatSetup(fileStat) } )
 
-		filePerm = fileStat[1]
+		# 파일 또는 디렉터리에 권한이 없을 시에 0으로 들어오는 값 수정
+		filePerm = fileStat[1] if fileStat[1] != '0' else '0' * len(compPerm)
 		fileOwner = fileStat[5]
 		permBool = True
 		ownerBool = True
@@ -128,7 +132,6 @@ class analysisBase(metaclass=ABCMeta):
 		if compPerm is not None:
 			for i in range(0, len(filePerm)):
 				if not cmpOper(filePerm[i], compPerm[i]):
-					print(filePerm[i], compPerm[i])
 					permBool = False
 					break
 
