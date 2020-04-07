@@ -81,7 +81,7 @@ def readScript(baseFileList, baseDir, codeMap = None):
 			fullFilePath = os.path.join(baseDir, baseFile)
 		else:
 			fullFilePath = os.path.join(baseDir, codeMap[baseFile][0])
-		with open(fullFilePath, 'r') as f:
+		with open(fullFilePath, 'r', encoding='UTF-8') as f:
 			data = ''.join([line for line in f.readlines() if line[0] != '#'])
 			fullString += data
 
@@ -100,7 +100,7 @@ def mergeScript(document, code, getPwd):
 	codeScript = readScript(code, CODEDIR, codeMap)
 	scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0],\
 					dt.strftime("%Y%m%d%H%M%S"))
-	with open(scriptFileName, 'w') as newFile:
+	with open(scriptFileName, 'w', encoding='UTF-8') as newFile:
 		newFile.write('#!/bin/sh\n')
 		newFile.write(libPre)
 		newFile.write(codeScript)
@@ -128,7 +128,7 @@ assetInfo:
 	""".format(strVal))
 
 def readConfig(name):
-	document = yaml.load(open("AVAS.yaml", 'r'), Loader=yaml.SafeLoader)
+	document = yaml.load(open("AVAS.yaml", 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)
 	doc = document['assetInfo']
 	print("""
 ***** Current Configration File Settings *****
