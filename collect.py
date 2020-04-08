@@ -5,6 +5,7 @@ import re
 import traceback
 import utility
 
+
 def main():
 	print('[Start Collect Module]')
 	fileName = 'AVAS.yaml'
@@ -17,6 +18,7 @@ def main():
 		utility.mergeScript(doc, fullCode, getPwd)
 	except Exception:
 		utility.printUsage(traceback.format_exc())
+
 
 if __name__ == '__main__':
 	main()
