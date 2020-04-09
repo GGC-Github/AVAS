@@ -118,7 +118,7 @@ def mergeScript(document, code, getPwd):
     os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
 
-def printUsage(strVal):
+def printCollectUsage(strVal):
     print("""
 {}
 [Usage]
@@ -134,6 +134,19 @@ assetInfo:
         - U-21 ~ U-30
 """.format(strVal))
 
+def printMainUsage():
+    print("""
+[Usage]
+====================
+
+1. Collect Module Start Options
+- avas.exe --collect
+
+2. Analysis Module Start Options
+- avas.exe --analysis
+
+====================
+""")
 
 def readConfig(name):
     document = yaml.load(open(name, 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)
