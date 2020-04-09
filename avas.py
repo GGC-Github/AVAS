@@ -70,7 +70,7 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description='Automated Vulnerability Analysis System',
                                          formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('AVAS MOD',
-                            help='사용하고자 하는 모드를 선택하세요\n'
+                            help='사용하고자 하는 모드를 선택하세요\n' 
                                  'Usage - avas.exe collect ...\n'
                                  '        avas.exe analysis ...')
 
