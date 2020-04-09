@@ -20,7 +20,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def processCheck(self, getValue):
 		keyValue = "{}{}".format(getValue, '_PS')
-		self.stat.update( { keyValue : ''.join("{} Not found Process\n".format(getValue)) })
+		self.stat.update( { keyValue : ''.join("- {} Not found Process\n".format(getValue)) })
 		flag = 0
 		if 'processInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line)
@@ -35,7 +35,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def portCheck(self, getValue, srvName):
 		keyValue = "{}{}".format(srvName, '_PORT')
-		self.stat.update( { keyValue : ''.join("{} Not found Port\n".format(srvName)) })
+		self.stat.update( { keyValue : ''.join("- {} Not found Port\n".format(srvName)) })
 		flag = 0
 		if 'portInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line)
@@ -49,7 +49,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def systemctlCheck(self, getValue, srvName):
 		keyValue = "{}{}".format(srvName, '_SYS')
-		self.stat.update( { keyValue : ''.join("{} Not found Service\n".format(srvName)) })
+		self.stat.update( { keyValue : ''.join("- {} Not found Service\n".format(srvName)) })
 		flag = 0
 		if 'systemctlInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line)
@@ -65,8 +65,8 @@ class analysisBase(metaclass=ABCMeta):
 	def fileDataCheck(self, fileName, defaultCnt, parseKey, pattern, confAttr):
 		result = defaultCnt
 		fileContent = self.fileList[fileName]
-		fileKey = "{}{}".format('FILE:', fileName)
-		self.stat.update( { fileKey : ''.join("{} Not Found Configuration(!)\n".format(confAttr))} )
+		fileKey = "{}{}".format('FILEDATA:', fileName)
+		self.stat.update( { fileKey : ''.join("- {} Not Found Configuration(!)\n".format(confAttr))} )
 		if fileContent is not None:
 			com = re.compile(pattern, re.MULTILINE)
 			reg = re.findall(com, fileContent['fileData'])
@@ -81,7 +81,7 @@ class analysisBase(metaclass=ABCMeta):
 		return result	
 
 	def dataNumGetValue(self, name, pattern, compValue, compType):
-		fileKey = "{}{}".format('FILE:', name)
+		fileKey = "{}{}".format('FILEDATA:', name)
 		result = 0
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
@@ -103,7 +103,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def dataStrGetValue(self, name, pattern, compValue, compType):
 		result = 0
-		fileKey = "{}{}".format('FILE:', name)
+		fileKey = "{}{}".format('FILEDATA:', name)
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
 		if reg:
@@ -120,7 +120,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def fileStatCheck(self, fileName, compPerm, compOwner, compType):
 		cmpOper = utility.OPS[compType]
-		fileKey = "{}{}".format('FILE:', fileName)
+		fileKey = "{}{}".format('FILEPERM:', fileName)
 		if 'fileRealStat' in self.fileList[fileName].keys():
 			fileStat = self.fileList[fileName]['fileRealStat'].split('|')
 			self.stat.update( { fileKey : utility.fileStatSetup(fileStat) } )

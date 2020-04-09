@@ -161,24 +161,29 @@ def mergeExeclData(setString):
     fullString = ''
     for key, value in setString.items():
         if '_PS' in key:
-            data = ''.join("{} 프로세스 상태\n".format(key.split('_')[0]))
+            data = ''.join("[ {} 프로세스 상태 ]\n\n".format(key.split('_')[0]))
             data += value
-        if '_PORT' in key:
-            data = ''.join("{} 포트 상태\n".format(key.split('_')[0]))
+        elif '_PORT' in key:
+            data = ''.join("[ {} 포트 상태 ]\n\n".format(key.split('_')[0]))
             data += value
-        if '_SYS' in key:
-            data = ''.join("{} 서비스 데몬 상태\n".format(key.split('_')[0]))
+        elif '_SYS' in key:
+            data = ''.join("[ {} 서비스 데몬 상태 ]\n\n".format(key.split('_')[0]))
             data += value
-        if 'FILE:' in key:
-            data = ''.join("파일 : {}\n".format(key.split('FILE:')[1]))
+        elif 'FILEPERM:' in key:
+            data = ''.join("파일명 : {}\n{}".format(key.split('FILEPERM:')[1], value))
+        elif 'FILEDATA:' in key:
+            data = ''.join("[ 파일명 : {} ]\n\n".format(key.split('FILEDATA:')[1]))
             data += value
-        if 'OS_VERSION' in key:
-            data = ''.join("{}\n".format('OS 버전'))
+        elif 'OS_VERSION' in key:
+            data = ''.join("[ {} ]\n\n".format('OS 버전'))
             data += value
-        if 'OS_KERNEL_VERSION' in key:
-            data = ''.join("{}\n".format('OS 커널 버전'))
+        elif 'OS_KERNEL_VERSION' in key:
+            data = ''.join("[ {} ]\n\n".format('OS 커널 버전'))
             data += value
+        else:
+            data = ''.join("{}\n".format(value))
 
+        data += '\n'
         fullString += data
 
     return fullString
