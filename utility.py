@@ -85,7 +85,7 @@ def readScript(baseFileList, baseDir, codeMap=None):
         if codeMap is None:
             fullFilePath = os.path.join(baseDir, baseFile)
         else:
-            fullFilePath = os.path.join(baseDir, codeMap[baseFile][0])
+            fullFilePath = os.path.join(baseDir, codeMap[baseFile][0][0])
         with open(fullFilePath, 'r', encoding='UTF-8') as f:
             data = ''.join([line for line in f.readlines() if line[0] != '#'])
             fullString += data
@@ -112,7 +112,7 @@ def mergeScript(document, code, getPwd):
         newFile.write(codeScript)
         newFile.write(libAutoStruct)
         for codekey in code:
-            newFile.write(codeMap[codekey][1] + '\n')
+            newFile.write(codeMap[codekey][0][1] + '\n')
         newFile.write(libPost)
 
     os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
@@ -134,6 +134,7 @@ assetInfo:
         - U-21 ~ U-30
 """.format(strVal))
 
+
 def printMainUsage():
     print("""
 [Usage]
@@ -147,6 +148,7 @@ def printMainUsage():
 
 ====================
 """)
+
 
 def readConfig(name):
     document = yaml.load(open(name, 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)

@@ -26,7 +26,7 @@ def collectMain(getFile = None):
         utility.printCollectUsage(traceback.format_exc())
 
 
-def analysisMain(resDir):
+def analysisMain(resDir = None):
     try:
         print('[ Start Analysis Module ]\n')
         if resDir is None:
@@ -48,9 +48,9 @@ def analysisMain(resDir):
             for key in sorted(infoList.keys()):
                 codeMap = getattr(codemapping, sysList['osType'].lower() + key[0]
                                   + 'codeMap')
-                code = codeMap[key][0]
+                code = codeMap[key][0][0]
                 analyze = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList,
-                                                                 infoList[key], sysList)
+                                                                 infoList[key], sysList, codeMap)
                 analysisRes.append(analyze.analysisFunc())
 
             print('##### Total Item Analysis Success!')
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     try:
         parser = argparse.ArgumentParser(description='Automated Vulnerability Analysis System',
                                          formatter_class=argparse.RawTextHelpFormatter)
-        parser.add_argument('AVAS MOD',
+        parser.add_argument('avas_mod',
                             help='사용하고자 하는 모드를 선택하세요\n' 
                                  'Usage - avas.exe collect ...\n'
                                  '        avas.exe analysis ...')
@@ -84,16 +84,18 @@ if __name__ == '__main__':
                                  'Default : 현재 디렉터리 위치\\inputResult\\ \n')
 
         args = parser.parse_args()
-        if args.mod in 'collect':
+        if args.avas_mod in 'collect':
             if args.coll_conf is not None:
                 collectMain(args.coll_conf)
             else:
                 collectMain()
-        elif args.mod in 'analysis':
+        elif args.avas_mod in 'analysis':
             if args.res_dir is not None:
                 analysisMain(args.res_dir)
             else:
                 analysisMain()
+        else:
+            parser.print_help()
 
     except IndexError:
         utility.printMainUsage()

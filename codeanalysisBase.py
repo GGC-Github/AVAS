@@ -5,13 +5,13 @@ import utility
 
 
 class analysisBase(metaclass=ABCMeta):
-	def __init__(self, code, fileList, infoList, sysList):
+	def __init__(self, code, fileList, infoList, sysList, codeMap):
 		self.code = code
 		self.fileList = fileList
 		self.infoList = infoList
 		self.sysList = sysList
 		self.stat = {}
-		self.fullString = [ self.code, 'O', {} ]
+		self.fullString = [self.code, 'O', {}, codeMap[self.code][1]]
 
 
 	@abstractmethod
