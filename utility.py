@@ -32,9 +32,12 @@ def xmlResultFileParser(resultFile):
     print(resultFile)
     doc = useXmlParser.parse(resultFile)
     root = doc.getroot()
-    sysInfo = {info.tag: base64Decode(info.text) if info.tag in
-                                                    ['processInfo', 'portInfo', 'systemctlInfo'] else info.text
-               for info in root.find("sysInfo").getchildren()}
+    sysInfo = {
+        info.tag: base64Decode(info.text) if info.tag in
+                                             ['processInfo', 'portInfo', 'systemctlInfo'] else info.text
+        for info in root.find("sysInfo").getchildren()
+    }
+
     infoCollectList = {}
     fileCollectList = {}
 

@@ -11,7 +11,7 @@ class analysisBase(metaclass=ABCMeta):
 		self.infoList = infoList
 		self.sysList = sysList
 		self.stat = {}
-		self.fullString = [self.code, 'O', {}, codeMap[self.code][1]]
+		self.fullString = [self.code, '양호', {}, codeMap[self.code][1]]
 
 
 	@abstractmethod
