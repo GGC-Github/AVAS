@@ -129,8 +129,8 @@ def makeExcelReport(analysisRes, sysList, resultNum):
             else:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.fillalign
 
-    fileName = ''.join("result_report_{}_{}_{}.xlsx".format(sysList['osName'],
-                                                            sysList['hostname'],
-                                                            dt.strftime("%Y%m%d%H%M%S")))
+    fileName = ''.join("result_report_{}_{}_{}.xlsx".format(
+        sysList['osName'], sysList['hostname'], dt.strftime("%Y%m%d%H%M%S"))
+    )
 
     wb.save(filename=fileName)

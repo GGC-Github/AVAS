@@ -67,21 +67,26 @@ def analysisMain(resDir = None):
 
 if __name__ == '__main__':
     try:
-        parser = argparse.ArgumentParser(description='Automated Vulnerability Analysis System',
-                                         formatter_class=argparse.RawTextHelpFormatter)
-        parser.add_argument('avas_mod',
-                            help='사용하고자 하는 모드를 선택하세요\n' 
-                                 'Usage - avas.exe collect ...\n'
-                                 '        avas.exe analysis ...')
+        parser = argparse.ArgumentParser(
+            prog='avas.exe', usage='%(prog)s [ AVAS MOD ] [options]',
+            description='Automated Vulnerability Analysis System',
+        )
 
-        parser.add_argument('--collect-conf', dest='coll_conf', metavar='Collect config file',
-                            help='수집 설정 파일 위치를 절대 경로로 지정하세요\n'
-                                 'Usage - avas.exe collect --collect-conf D:\\AVAS\\AVAS.yaml\n'
-                                 'Default : 현재 디렉터리 위치/AVAS.yaml')
-        parser.add_argument('--result-dir', dest='res_dir', metavar='Directory containing result xml file',
-                            help='수집 결과 xml 파일 전체를 넣어놓은 디렉터리의 절대 경로로 지정하세요\n'
-                                 'Usage - avas.exe analysis --result-dir D:\\AVAS\\inputResult\n'
-                                 'Default : 현재 디렉터리 위치\\inputResult\\ \n')
+        parser.add_argument(
+            'avas_mod',
+            metavar='AVAS MOD',
+            help='collect [ ... ] or analysis [ ... ]'
+        )
+
+        parser.add_argument(
+            '--collect-conf', dest='coll_conf', metavar='File',
+            help='avas.exe collect --collect-conf C:\\AVAS\\AVAS.yaml'
+        )
+
+        parser.add_argument(
+            '--result-dir', dest='res_dir', metavar='Dir',
+            help='avas.exe analysis --result-dir C:\\AVAS\\inputResult\\'
+        )
 
         args = parser.parse_args()
         if args.avas_mod in 'collect':
