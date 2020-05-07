@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import excelstyle
+import utility
 from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 import datetime
 import warnings
 warnings.simplefilter("ignore", UserWarning)
@@ -10,6 +12,7 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     dt = datetime.datetime.now()
     wb = load_workbook(filename='default_report_template.xlsx')
     wsResSum = wb['진단 결과 요약']
+    impdict = {}
     totalcnt = 0
     resultcnt = 0
 
@@ -19,8 +22,7 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     wsResSum['D8'] = sysList['hostname']
     wsResSum['D9'] = dt.strftime("%Y-%m-%d %H:%M:%S")
 
-#   진단 현황 분포표 및 그래프
-    impdict = {}
+#   진단 현황 분포표
     impdict.update({'양호': [int(data[3][3]) for data in analysisRes if data[1] in '양호']})
     impdict.update({'취약': [int(data[3][3]) for data in analysisRes if data[1] in '취약']})
     impdict.update({'리뷰': [int(data[3][3]) for data in analysisRes if data[1] in '리뷰']})
@@ -71,7 +73,61 @@ def makeExcelReport(analysisRes, sysList, resultNum):
             elif num == 0:
                 wsResSum.merge_cells(start_row=36 + cnt, start_column=2 + num, end_row=36 + cnt, end_column=2 + num + 1)
 
-    wsResSum = wb['진단 결과 요약']
+#   진단 결과 상세 내역 (세로)
+    wsResDetVer = wb['진단 결과 상세']
+    rownum = 3
+    for cnt in range(0, len(analysisRes)):
+        inputdata = [
+            [' ', ' '], ['구분', analysisRes[cnt][3][0]], ['코드', analysisRes[cnt][0]],
+            ['항목', analysisRes[cnt][3][1]], ['중요도', int(analysisRes[cnt][3][3])],
+            ['진단 결과', analysisRes[cnt][1]], ['판단 기준', analysisRes[cnt][3][4]],
+            ['상세 현황', analysisRes[cnt][2]], ['조치 방법', analysisRes[cnt][3][5]]
+        ]
+        for idx in range(0, 9):
+            for colcnt in range(0, 2):
+                if idx != 0:
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).border = excelstyle.thinborder
+                if colcnt == 0 and idx != 0:
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).alignment = excelstyle.centerwrapalign
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).fill = excelstyle.cellbgfill
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).font = excelstyle.whiteboldfont
+                else:
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).alignment = excelstyle.leftwrapalign
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).font = excelstyle.normalfont
+
+                if idx == 7 and colcnt == 1:
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = utility.mergeExeclData(inputdata[idx][colcnt])
+                else:
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = inputdata[idx][colcnt]
+
+            rownum += 1
+
+#   진단 결과 상세 내역 (가로)
+    wsResDetHor = wb['진단 결과 상세(가로)']
+    for cnt in range(0, len(analysisRes)):
+        inputdata = [
+            analysisRes[cnt][3][0], analysisRes[cnt][0], analysisRes[cnt][3][1], int(analysisRes[cnt][3][3]),
+            analysisRes[cnt][1], analysisRes[cnt][3][4], analysisRes[cnt][2], analysisRes[cnt][3][5]
+        ]
+        for idx in range(0, 8):
+            wsResDetHor.cell(row=5 + cnt, column=2 + idx).border = excelstyle.thinborder
+            wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.normalfont
+            if idx == 6:
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = utility.mergeExeclData(inputdata[idx])
+            else:
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = inputdata[idx]
+            if idx < 2:
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.leftalign
+            elif idx == 4 or idx == 3:
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.centeralign
+                if inputdata[idx] == '양호':
+                    wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.greenfont
+                elif inputdata[idx] == '리뷰':
+                    wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.bluefont
+                elif inputdata[idx] == '취약':
+                    wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.redfont
+            else:
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.fillalign
 
     fileName = ''.join("result_report_{}_{}_{}.xlsx".format(sysList['osName'],
                                                             sysList['hostname'],

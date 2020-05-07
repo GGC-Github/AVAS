@@ -13,51 +13,49 @@ class analysisBase(metaclass=ABCMeta):
 		self.stat = {}
 		self.fullString = [self.code, '양호', {}, codeMap[self.code][1]]
 
-
 	@abstractmethod
 	def analysisFunc(self):
 		pass
 
 	def processCheck(self, getValue):
 		keyValue = "{}{}".format(getValue, '_PS')
-		self.stat.update( { keyValue : ''.join("- {} Not found Process\n".format(getValue)) })
+		self.stat.update({keyValue: ''.join("- {} Not found Process\n".format(getValue))})
 		flag = 0
 		if 'processInfo' in self.sysList.keys():
-			valueStr = ''.join("{}\n".format(line)
-						for line in self.sysList['processInfo'].split('\n')
-						if getValue in line)
+			valueStr = ''.join(
+				"{}\n".format(line) for line in self.sysList['processInfo'].split('\n') if getValue in line
+			)
 
 			if valueStr != '':
-				self.stat.update( { keyValue : valueStr } )
+				self.stat.update({keyValue: valueStr})
 				flag = 1
 
 		return flag
 
 	def portCheck(self, getValue, srvName):
 		keyValue = "{}{}".format(srvName, '_PORT')
-		self.stat.update( { keyValue : ''.join("- {} Not found Port\n".format(srvName)) })
+		self.stat.update({keyValue: ''.join("- {} Not found Port\n".format(srvName))})
 		flag = 0
 		if 'portInfo' in self.sysList.keys():
-			valueStr = ''.join("{}\n".format(line)
-						for line in self.sysList['portInfo'].split('\n')
-						if getValue in line)
+			valueStr = ''.join(
+				"{}\n".format(line) for line in self.sysList['portInfo'].split('\n') if getValue in line
+			)
 			if valueStr != '':
-				self.stat.update( { keyValue : valueStr } )
+				self.stat.update({keyValue: valueStr})
 				flag = 1
 
 		return flag
 
 	def systemctlCheck(self, getValue, srvName):
 		keyValue = "{}{}".format(srvName, '_SYS')
-		self.stat.update( { keyValue : ''.join("- {} Not found Service\n".format(srvName)) })
+		self.stat.update({keyValue: ''.join("- {} Not found Service\n".format(srvName))})
 		flag = 0
 		if 'systemctlInfo' in self.sysList.keys():
-			valueStr = ''.join("{}\n".format(line)
-						for line in self.sysList['systemctlInfo'].split('\n')
-						for value in getValue
-						if value in line)
+			valueStr = ''.join(
+				"{}\n".format(line) for line in self.sysList['systemctlInfo'].split('\n') for value in getValue
+				if value in line)
 			if valueStr != '':
-				self.stat.update( { keyValue : valueStr } )
+				self.stat.update({keyValue: valueStr})
 				if 'loaded active' in self.stat[keyValue]:
 					flag = 1
 		return flag
@@ -66,16 +64,16 @@ class analysisBase(metaclass=ABCMeta):
 		result = defaultCnt
 		fileContent = self.fileList[fileName]
 		fileKey = "{}{}".format('FILEDATA:', fileName)
-		self.stat.update( { fileKey : ''.join("- {} Not Found Configuration(!)\n".format(confAttr))} )
+		self.stat.update({fileKey: ''.join("- {} Not Found Configuration(!)\n".format(confAttr))})
 		if fileContent is not None:
 			com = re.compile(pattern, re.MULTILINE)
 			reg = re.findall(com, fileContent['fileData'])
 			if reg:
-				self.stat.update( { fileKey : ''.join("{}\n".format(line) for line in reg) } )
+				self.stat.update({fileKey: ''.join("{}\n".format(line) for line in reg)})
 				if parseKey == 'exist':
 					result = 0
 				elif parseKey == '!exist':
-					self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 					result = 1
 
 		return result	
@@ -88,15 +86,15 @@ class analysisBase(metaclass=ABCMeta):
 
 		if compType == '<':
 			if reg and int(reg[0]) < compValue:
-				self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 				result = 1
 		elif compType == '>':
 			if reg and int(reg[0]) > compValue:
-				self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 				result = 1
 		elif compType == '=':
 			if reg and int(reg[0]) == compValue:
-				self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 				result = 1
 
 		return result
@@ -108,12 +106,12 @@ class analysisBase(metaclass=ABCMeta):
 		reg = re.findall(com, self.stat[fileKey])
 		if reg:
 			if compType == '!':
-				if  compValue not in reg[0]:
-					self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+				if compValue not in reg[0]:
+					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 					result = 1
 			elif compType == '=':
 				if compValue in reg[0]:
-					self.stat.update( { fileKey : self.stat[fileKey].replace('\n', '(!)\n') } )
+					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 					result = 1
 
 		return result

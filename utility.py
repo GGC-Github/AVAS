@@ -35,7 +35,7 @@ def xmlResultFileParser(resultFile):
     sysInfo = {
         info.tag: base64Decode(info.text) if info.tag in
                                              ['processInfo', 'portInfo', 'systemctlInfo'] else info.text
-        for info in root.find("sysInfo").getchildren()
+        for info in root.find("sysInfo")
     }
 
     infoCollectList = {}
@@ -52,7 +52,7 @@ def xmlResultFileParser(resultFile):
         fileCollectList.update({fileElement.find('filePath').text:
                                     {data.tag: base64Decode(data.text)
                                         if data.tag == 'fileData' else data.text
-                                     for data in fileElement.getchildren()
+                                     for data in fileElement
                                      if data.tag != 'filePath'}})
 
     return fileCollectList, infoCollectList, sysInfo
