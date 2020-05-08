@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import excelstyle
 import utility
+import io
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 import datetime
@@ -10,7 +11,10 @@ warnings.simplefilter("ignore", UserWarning)
 
 def makeExcelReport(analysisRes, sysList, resultNum):
     dt = datetime.datetime.now()
-    wb = load_workbook(filename='default_report_template.xlsx')
+
+#   wb = load_workbook(filename='default_report_template.xlsx')
+    wb = load_workbook(io.BytesIO(excelstyle.defaultexcel))
+    print('Success!')
     wsResSum = wb['진단 결과 요약']
     impdict = {}
     totalcnt = 0
