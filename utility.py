@@ -58,7 +58,22 @@ def xmlResultFileParser(resultFile):
     return fileCollectList, infoCollectList, sysInfo
 
 
-def codeParser(codeList):
+def readConfig(name):
+    document = yaml.load(open(name, 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)
+    doc = document['assetInfo']
+    print("""
+***** Current Configration File Settings *****
+
+TYPE : {}
+SUBTYPE : {}
+CODE : {}
+
+**********************************************
+""".format(doc['assetType'], doc['assetSubType'], doc['assetCode']))
+    return doc
+
+
+def codeParser(codeList, subType):
     totalList = []
     for code in codeList:
         reg = re.findall(r'(\w+)-(\w+)', code)
@@ -70,8 +85,9 @@ def codeParser(codeList):
                                                                       int(reg[1][1]) + 1)]
             totalList.extend(listTmp)
         elif len(reg) == 1 and reg[0][1].lower() == 'all':
-            totalList = ["{}-{:02}".format(reg[0][0], x) for x in range(1, 73 + 1)]
-            break
+            codemap = getattr(codemapping, subType[0].lower() + reg[0][0] + 'codeMap')
+            codecnt = 2 if reg[0][0] == 'U' else 3
+            totalList += ["{}-{:0{}}".format(reg[0][0], int(x.split('-')[1]), codecnt) for x in codemap.keys()]
         else:
             if isinstance(code, list):
                 totalList.extend(code)
@@ -101,21 +117,31 @@ def mergeScript(document, code, getPwd):
     assetType = document['assetType'][0]
     assetSubType = document['assetSubType'][0].lower()
     CODEDIR = os.path.join(SCRIPTDIR, assetType, assetSubType)
-    codeMap = getattr(codemapping, assetSubType + code[0][0] + 'codeMap')
+    codedeli = list(set([val.split('-')[0] for val in code]))
+    codelist = []
+    codefunclist = []
+    for val in codedeli:
+        codeMap = getattr(codemapping, assetSubType + val + 'codeMap')
+        codedivi = [item for item in code if val in item]
+        for key in codedivi:
+            codelist.append(codeMap[key][0][0])
+            codefunclist.append(codeMap[key][0][1])
+    codelist = list(set(codelist))
+    codelist.sort()
 
+    codeScript = readScript(codelist, CODEDIR)
     libPre = readScript(LIBPREFILES, LIBDIR)
     libPost = readScript(LIBPOSTFILE, LIBDIR)
     libAutoStruct = readScript(LIBAUTOFILES, LIBDIR)
-    codeScript = readScript(code, CODEDIR, codeMap)
-    scriptFileName = "{}/{}_{}.sh".format(getPwd, document['assetSubType'][0],
-                                          dt.strftime("%Y%m%d%H%M%S"))
+    fileext = 'sh' if assetSubType == 'linux' else 'bat'
+    scriptFileName = "{}/{}_{}.{}".format(getPwd, document['assetSubType'][0], dt.strftime("%Y%m%d%H%M%S"), fileext)
     with open(scriptFileName, 'w', encoding='UTF-8', newline='\n') as newFile:
         newFile.write('#!/bin/sh\n')
         newFile.write(libPre)
         newFile.write(codeScript)
         newFile.write(libAutoStruct)
-        for codekey in code:
-            newFile.write(codeMap[codekey][0][1] + '\n')
+        for funclist in codefunclist:
+            newFile.write(funclist + '\n')
         newFile.write(libPost)
 
     os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
@@ -151,21 +177,6 @@ def printMainUsage():
 
 ====================
 """)
-
-
-def readConfig(name):
-    document = yaml.load(open(name, 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)
-    doc = document['assetInfo']
-    print("""
-***** Current Configration File Settings *****
-
-TYPE : {}
-SUBTYPE : {}
-CODE : {}
-
-**********************************************
-""".format(doc['assetType'], doc['assetSubType'], doc['assetCode']))
-    return doc
 
 
 def fileStatSetup(setString):

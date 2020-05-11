@@ -20,7 +20,7 @@ def collectMain(getFile = None):
     try:
         print('\nConfiguratin File Path : ' + fullPath)
         doc = utility.readConfig(fullPath)
-        fullCode = utility.codeParser(doc['assetCode'])
+        fullCode = utility.codeParser(doc['assetCode'], doc['assetSubType'])
         utility.mergeScript(doc, fullCode, getPwd)
     except Exception:
         utility.printCollectUsage(traceback.format_exc())
@@ -46,11 +46,9 @@ def analysisMain(resDir = None):
             print('##### Result xml File Parsing Success!')
             analysisRes = []
             for key in sorted(infoList.keys()):
-                codeMap = getattr(codemapping, sysList['osType'].lower() + key[0]
-                                  + 'codeMap')
+                codeMap = getattr(codemapping, sysList['osType'].lower() + key.split('-')[0] + 'codeMap')
                 code = codeMap[key][0][0]
-                analyze = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList,
-                                                                 infoList[key], sysList, codeMap)
+                analyze = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList, infoList[key], sysList, codeMap)
                 analysisRes.append(analyze.analysisFunc())
 
             print('##### Total Item Analysis Success!')

@@ -12,9 +12,7 @@ warnings.simplefilter("ignore", UserWarning)
 def makeExcelReport(analysisRes, sysList, resultNum):
     dt = datetime.datetime.now()
 
-#   wb = load_workbook(filename='default_report_template.xlsx')
     wb = load_workbook(io.BytesIO(excelstyle.defaultexcel))
-    print('Success!')
     wsResSum = wb['진단 결과 요약']
     impdict = {}
     totalcnt = 0

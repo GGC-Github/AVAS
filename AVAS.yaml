@@ -31,7 +31,7 @@
 #		or
 #		- U-01 ~ U-10
 #		or
-#		- U-ALL
+#		- U-ALL or U-all
 #	
 # 
 # @Description
@@ -46,11 +46,5 @@ assetInfo:
     assetSubType:
         - LINUX
     assetCode:
-        - U-01
-        - U-03
-        - U-07
-        - U-08
-        - U-31
-        - U-32
-        - U-42
-        - U-43
+        - U-all
+        - SRV-all
