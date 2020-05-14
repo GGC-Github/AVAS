@@ -1,6 +1,6 @@
 #############################################################################################
 #
-# @file lib_xml.inc
+# @file lib_shell_xml.inc
 # 
 # @brief 공통 xml 유틸리티 파일
 #
@@ -124,13 +124,40 @@ xml_sysInfo_contents() {
 		ENCTYPE="base64"
 	fi
 
-	process_info=`ps -ef | sed -e 's/^ *//g' -e 's/^	*//g'`
-	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT' | sed -e 's/^ *//g' -e 's/^	*//g'`
-	systemctl_info=`$systemctl_cmd list-units --type service | sed -e 's/^ *//g' -e 's/^	*//g'`
+    hostname=`hostname`
+
 	echo "        <osName>$OS_NAME</osName>" >> $result_file 2>&1
 	echo "        <osVersion>$OS_VERSION</osVersion>" >> $result_file 2>&1
 	echo "        <osKernelVersion>$OS_KERNEL_VERSION</osKernelVersion>" >> $result_file 2>&1
+	echo "        <hostname>$hostname</hostname>" >> $result_file 2>&1
 	echo "        <encType>$ENCTYPE</encType>" >> $result_file 2>&1
+
+    inter_name=`ls /sys/class/net | grep -v 'lo'`
+    ip_list=""
+    for name in $inter_name; do
+        if [ "`command -v ifconfig 2>/dev/null`" != "" ] || [ "`which ifconfig 2>/dev/null`" != "" ]; then
+            tmp=`ifconfig $name`
+        elif [ "`command -v ip 2>/dev/null`" != "" ] || [ "`which ip 2>/dev/null`" != "" ]; then
+            tmp=`ip a show $name`
+        fi
+        if [ "$ip_list" = "" ]; then
+            ip_list=`echo "$tmp"`
+        else
+            ip_list=`echo -e "$ip_list\n"; echo "$tmp"`
+        fi
+    done
+
+	process_info=`ps -ef | sed -e 's/^ *//g' -e 's/^	*//g'`
+	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT' | sed -e 's/^ *//g' -e 's/^	*//g'`
+	if [ "$OS_TYPE" = "Linux" ]; then
+	    service_info=`$systemctl_cmd list-units --type service | sed -e 's/^ *//g' -e 's/^	*//g'`
+	fi
+    if [ "$ip_list" != "" ]; then
+        echo "        <ipList><![CDATA[" >> $result_file 2>&1
+        enc_ip_list="`(data_cmd_encoding \"$ip_list\")`" >> $result_file 2>&1
+        echo "$enc_ip_list" >> $result_file 2>&1
+        echo "        ]]></ipList>" >> $result_file 2>&1
+    fi
 	if [ "$process_info" != "" ]; then
 		echo "        <processInfo><![CDATA[" >> $result_file 2>&1
 		enc_process_info="`(data_cmd_encoding \"$process_info\")`"
@@ -143,11 +170,11 @@ xml_sysInfo_contents() {
 		echo "$enc_port_info" >> $result_file 2>&1
 		echo "        ]]></portInfo>" >> $result_file 2>&1
 	fi
-	if [ "$systemctl_info" != "" ]; then
-		echo "        <systemctlInfo><![CDATA[" >> $result_file 2>&1
-		enc_systemctl_info="`(data_cmd_encoding \"$systemctl_info\")`"
-		echo "$enc_systemctl_info" >> $result_file 2>&1
-		echo "        ]]></systemctlInfo>" >> $result_file 2>&1
+	if [ "$service_info" != "" ]; then
+		echo "        <serviceInfo><![CDATA[" >> $result_file 2>&1
+		enc_service_info="`(data_cmd_encoding \"$service_info\")`"
+		echo "$enc_service_info" >> $result_file 2>&1
+		echo "        ]]></serviceInfo>" >> $result_file 2>&1
 	fi
 	xml_tag_write "$result_file" "</sysInfo>" "1"
 }

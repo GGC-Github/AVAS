@@ -1,29 +1,40 @@
 #######################################################################################################
 #
-# @File AVAS.yaml - Collection module Configuration File
+# @File AVAS.yaml - AVAS 수집 모듈 설정 파일
 # 
 # @Version 0.1
-# 
+#
+# @Description
+# - 각 자산에 대한 최종 수집 스크립트를 생성하려면 이 파일을 먼저 설정하십시오.
+# - 아래의 자산 설정 옵션 설명과 예시를 보고 따라 설정 하십시오.
+#
 # @Options
 # - assetType
-# 	* This option is an asset identifier option.(eg OS, WAS, DB)
-# 	* Currently only OS is available.
+# 	* 이 옵션은 상세 자산을 설정하기 전에 자산 유형 설정을 위한 옵션(eg OS, WEB, WAS, DB, NETWORK)
+# 	* 현재 OS 자산 유형만 사용 가능
 #
 # - assetSubType
-#	* Subsetting of assetType setting.(eg LINUX, AIX, HP-UX)
-#	* Currently only LINUX is available.
+#	* 이 옵션은 assetType의 하위 옵션으로 상세 자산을 설정하기 위한 옵션
+#   * (eg LINUX, AIX, HP-UX, SUNOS, MARIADB, APACHE, TOMCAT...)
+#	* 현재 LINUX, WINDOW 자산 사용 가능
+#
+# - assetEnv
+#   * 이 옵션은 assetType 옵션이 DB 또는 WEB/WAS로 설정되어 있는 경우 해당 자산이 설치되어 있는 환경을 지정
+#   * (eg LINUX, AIX, HP-UX, SUNOS, WINDOWS)
 #
 # - assetCode
-#	* This option sets the name and scope of the item you want to diagnose.
-#	* There are three ways to set this option
-#		1. One by One.(eg U-01,U-02,U-03)
-#		2. Use '~' to specify the range.(eg U-01 ~ U-10)
-#		3. Use 'ALL' to specify the entire range.(eg U-ALL)
+#	* 이 옵션은 진단하고자 자산의 항목 코드를 지정
+#	* 옵션 설정 방법은 3가지로 가능
+#		1. 항목 하나씩 지정하는 방법 (eg U-01,U-02,U-03)
+#		2. '~'를 사용하여 범위를 지정하는 방법 (eg U-01 ~ U-10)
+#		3. 해당 항목 코드의 전체 항목을 진단하고자 할 때 'ALL'을 지정하는 방법 (eg U-ALL)
 # Ex)
-#	assetInfo:
-#		- OS
+#	assetType:
+#		- WAS
 #	assetSubType:
-#		- LINUX
+#		- JBOSS
+#   assetEnv:
+#       - LINUX
 #	assetCode:
 #		- U-01
 #		- U-02
@@ -32,11 +43,6 @@
 #		- U-01 ~ U-10
 #		or
 #		- U-ALL or U-all
-#	
-# 
-# @Description
-# - Set this file first to create the final collection script for each asset.
-# - Set according to the examples of the options.
 #
 #######################################################################################################
 
@@ -45,6 +51,8 @@ assetInfo:
         - OS
     assetSubType:
         - LINUX
+    assetEnv:
+        - ~
     assetCode:
         - U-all
         - SRV-all

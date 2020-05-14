@@ -3,7 +3,6 @@ import excelstyle
 import utility
 import io
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment
 import datetime
 import warnings
 warnings.simplefilter("ignore", UserWarning)
@@ -130,6 +129,13 @@ def makeExcelReport(analysisRes, sysList, resultNum):
                     wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.redfont
             else:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.fillalign
+
+    wsResRefInfo = wb['참고']
+    for info, val in zip(['ipList', 'processInfo', 'portInfo', 'serviceInfo'], ['B5', 'B31', 'B57', 'B83']):
+        if info in sysList.keys():
+            wsResRefInfo[val] = sysList[info]
+            wsResRefInfo[val].font = excelstyle.normalfont
+            wsResRefInfo[val].alignment = excelstyle.leftwrapalign
 
     fileName = ''.join("result_report_{}_{}_{}.xlsx".format(
         sysList['osName'], sysList['hostname'], dt.strftime("%Y%m%d%H%M%S"))
