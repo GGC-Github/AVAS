@@ -121,6 +121,14 @@ def mergeScript(document, code, getPwd):
     codedeli = list(set([val.split('-')[0] for val in code]))
     codelist = []
     codefunclist = []
+    liblist = {
+        'windows': ['@echo off\n', 'bat', ['lib_batch_preprocess.inc'], None, ['lib_batch_postprocess.inc']],
+        'linux': [
+            '#!/bin/sh\n', 'sh', ['lib_shell_preprocess.inc', 'lib_shell_xml.inc', 'lib_shell_encode.inc'],
+            ['lib_shell_autostruct.inc'], ['lib_shell_postprocess.inc']
+        ]
+    }
+
     for val in codedeli:
         codeMap = getattr(codemapping, assetSubType + val + 'codeMap')
         codedivi = [item for item in code if val in item]
@@ -130,33 +138,35 @@ def mergeScript(document, code, getPwd):
     codelist = list(set(codelist))
     codelist.sort()
 
-    if assetSubType == 'windows' or assetEnv:
-        LIBPREFILES = ['lib_batch_preprocess.inc', 'lib_batch_xml.inc', 'lib_batch_encode.inc']
-        LIBAUTOFILES = ['lib_batch_autostruct.inc']
-        LIBPOSTFILE = ['lib_batch_postprocess.inc']
-        fileheader = '@echo off\n'
-        fileext = 'bat'
+    if assetSubType == 'windows' or assetEnv == 'windows':
+        assetname = 'windows'
     else:
-        LIBPREFILES = ['lib_shell_preprocess.inc', 'lib_shell_xml.inc', 'lib_shell_encode.inc']
-        LIBAUTOFILES = ['lib_shell_autostruct.inc']
-        LIBPOSTFILE = ['lib_shell_postprocess.inc']
-        fileheader = '#!/bin/sh\n'
-        fileext = 'sh'
+        assetname = 'linux'
+
+    fileheader = liblist[assetname][0]
+    fileext = liblist[assetname][1]
+    LIBPREFILES = liblist[assetname][2]
+    LIBAUTOFILES = liblist[assetname][3]
+    LIBPOSTFILE = liblist[assetname][4]
 
     codeScript = readScript(codelist, CODEDIR)
     libPre = readScript(LIBPREFILES, LIBDIR)
     libPost = readScript(LIBPOSTFILE, LIBDIR)
-    libAutoStruct = readScript(LIBAUTOFILES, LIBDIR)
-    scriptFileName = "{}/{}_{}.{}".format(getPwd, document['assetSubType'][0], dt.strftime("%Y%m%d%H%M%S"), fileext)
+    libAutoStruct = None
+    if LIBAUTOFILES is not None:
+        libAutoStruct = readScript(LIBAUTOFILES, LIBDIR)
+
+    scriptFileName = os.path.join(getPwd, "{}_{}.{}".format(document["assetSubType"][0], dt.strftime("%Y%m%d%H%M%S"),
+                                                            fileext))
     with open(scriptFileName, 'w', encoding='UTF-8', newline='\n') as newFile:
         newFile.write(fileheader)
         newFile.write(libPre)
         newFile.write(codeScript)
-        newFile.write(libAutoStruct)
-        for funclist in codefunclist:
-            newFile.write(funclist + '\n')
+        if LIBAUTOFILES is not None:
+            newFile.write(libAutoStruct)
+            for funclist in codefunclist:
+                newFile.write(funclist + '\n')
         newFile.write(libPost)
-
     os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
 

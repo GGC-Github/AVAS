@@ -11,13 +11,13 @@
 windowsWcodeMap = {
 	'W-01':
 		[
-			['windows001', 'linux001 U-01'],
+			['windows001', 'windows001`'],
 			[
-				'계정 관리', 'root 계정 원격 접속 제한',
+				'계정 관리', 'Administrator 계정 이름 바꾸기',
 				'상', '3',
-				'양호: 원격 터미널 서비스를 사용하지 않거나, 사용 시 root 직접 접속을 차단한 경우\n'
-				'취약: 원격 터미널 서비스 사용 시 root 직접 접속을 허용한 경우',
-				'원격 접속 시 root 계정으로 바로 접속 할 수 없도록 설정파일 수정'
+				'양호: Administrator Default 계정 이름을 변경한 경우\n'
+				'취약: Administrator Default 계정 이름을 변경하지 않은 경우',
+				'Administrator Default 계정 이름 변경'
 			]
 		],
 }

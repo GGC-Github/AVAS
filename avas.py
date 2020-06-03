@@ -9,32 +9,25 @@ import codeanalysisFunc
 import excelutility
 
 
-def collectMain(getFile = None):
+def collectMain(fullPath = None):
     print('[Start Collect Module]')
-    getPwd = os.getcwd()
-    if getFile is None:
-        fileName = 'AVAS.yaml'
-        fullPath = os.path.join(getPwd, fileName)
-    else:
-        fullPath = getFile
     try:
-        print('\nConfiguratin File Path : ' + fullPath)
+        fullPath = fullPath if fullPath else os.path.join(os.getcwd(), 'AVAS.yaml')
+        print(f'\nConfiguratin File Path : {fullPath}')
         doc = utility.readConfig(fullPath)
         fullCode = utility.codeParser(doc['assetCode'], doc['assetSubType'])
-        utility.mergeScript(doc, fullCode, getPwd)
+        utility.mergeScript(doc, fullCode, os.getcwd())
     except Exception:
         utility.printCollectUsage(traceback.format_exc())
 
 
-def analysisMain(resDir = None):
+def analysisMain(fullPath = None):
     try:
         print('[ Start Analysis Module ]\n')
-        if resDir is None:
+        if fullPath is None:
             fullPath = os.path.join(os.getcwd(), 'inputResult')
-        else:
-            fullPath = resDir
 
-        print('Input Result Collection XML File Directory : ' + fullPath + '\n')
+        print(f'Input Result Collection XML File Directory : {fullPath}\n')
         fullFileList = os.listdir(fullPath)
         print('[ Result File List ]\n')
         resultNum = 1
