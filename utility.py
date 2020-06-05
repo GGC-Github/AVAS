@@ -30,8 +30,9 @@ def xmlResultFileParser(resultFile):
     print(resultFile)
     doc = useXmlParser.parse(resultFile)
     root = doc.getroot()
+    decodelist = ['ipList', 'processInfo', 'portInfo', 'serviceInfo']
     sysInfo = {
-        info.tag: base64Decode(info.text) if info.tag in ['ipList', 'processInfo', 'portInfo', 'serviceInfo']
+        info.tag: base64Decode(info.text) if info.tag in decodelist
         else info.text for info in root.find("sysInfo")
     }
 
@@ -84,7 +85,7 @@ def codeParser(codeList, subType):
             totalList.extend(listTmp)
         elif len(reg) == 1 and reg[0][1].lower() == 'all':
             codemap = getattr(codemapping, subType[0].lower() + reg[0][0] + 'codeMap')
-            codecnt = 2 if reg[0][0] == 'U' else 3
+            codecnt = 3 if reg[0][0] == 'SRV' else 2
             totalList += ["{}-{:0{}}".format(reg[0][0], int(x.split('-')[1]), codecnt) for x in codemap.keys()]
         else:
             if isinstance(code, list):
@@ -104,7 +105,7 @@ def readScript(baseFileList, baseDir, codeMap=None):
         else:
             fullFilePath = os.path.join(baseDir, codeMap[baseFile][0][0])
         with open(fullFilePath, 'r', encoding='UTF-8') as f:
-            data = ''.join([line for line in f.readlines() if line[0] != '#'])
+            data = ''.join([line for line in f.readlines() if line[0] != '#' if not line.startswith('::')])
             fullString += data
 
     return fullString
@@ -158,14 +159,15 @@ def mergeScript(document, code, getPwd):
 
     scriptFileName = os.path.join(getPwd, "{}_{}.{}".format(document["assetSubType"][0], dt.strftime("%Y%m%d%H%M%S"),
                                                             fileext))
+    if assetname == 'windows':
+        scriptMid = '\n'.join(codefunclist) + codeScript
+    else:
+        scriptMid = codeScript + libAutoStruct + '\n'.join(codefunclist)
+
     with open(scriptFileName, 'w', encoding='UTF-8', newline='\n') as newFile:
         newFile.write(fileheader)
         newFile.write(libPre)
-        newFile.write(codeScript)
-        if LIBAUTOFILES is not None:
-            newFile.write(libAutoStruct)
-            for funclist in codefunclist:
-                newFile.write(funclist + '\n')
+        newFile.write(scriptMid)
         newFile.write(libPost)
     os.chmod(scriptFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 

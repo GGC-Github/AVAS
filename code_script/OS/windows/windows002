@@ -1,0 +1,27 @@
+
+
+echo     ^<infoElement code="%CODE002%"^> >> %RESULT_COLLECT_FILE%
+
+net user guest | findstr /bic:"Account active" > guest_tmp.txt
+call :base64encode guset_tmp.txt
+
+echo         ^<command name="GUEST_ACCOUNT"^>^<![CDATA[ >> %RESULT_COLLECT_FILE%
+for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
+echo         ]]^>^</command^> >> %RESULT_COLLECT_FILE%
+
+echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
+
+secedit /export /cfg secpolicy.txt
+call :fileCheckSum secpolicy.txt, checksum
+if %checksum% NEQ 0 (
+    echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
+    echo             ^<filePath checksum="%checksum%"^>^<![CDATA[Local Security Policy]]^>^</filePath^> >> %RESULT_FILE_DATA_FILE%
+    call :base64encode secpolicy.txt
+    echo             ^<fileData^>^<![CDATA[ >> %RESULT_FILE_DATA_FILE%
+    for /f  "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_FILE_DATA_FILE%
+    echo             ]]^>^</fileData^> >> %RESULT_FILE_DATA_FILE%
+    echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
+)
+if exist secpolicy.txt (
+    del /q secpolicy.txt
+)

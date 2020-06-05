@@ -50,8 +50,8 @@ assetInfo:
     assetType:
         - OS
     assetSubType:
-        - WINDOWS
+        - LINUX
     assetEnv:
         - ~
     assetCode:
-        - W-01
+        - U-all

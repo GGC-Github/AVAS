@@ -43,7 +43,7 @@ xml_command_write() {
 	echo "        <command name=\"$name\"><![CDATA[" >> $RESULT_COLLECT_FILE 2>&1
 	enc_data="`(data_cmd_encoding \"$data\")`"
 	echo "$enc_data" >> $RESULT_COLLECT_FILE 2>&1
-	echo "            ]]></command>" >> $RESULT_COLLECT_FILE 2>&1
+	echo "        ]]></command>" >> $RESULT_COLLECT_FILE 2>&1
 }
 
 xml_fileInfo_write() {

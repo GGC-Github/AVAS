@@ -11,12 +11,36 @@
 windowsWcodeMap = {
 	'W-01':
 		[
-			['windows001', 'windows001`'],
+			['windows001', 'set CODE001=W-01'],
 			[
 				'계정 관리', 'Administrator 계정 이름 바꾸기',
 				'상', '3',
 				'양호: Administrator Default 계정 이름을 변경한 경우\n'
 				'취약: Administrator Default 계정 이름을 변경하지 않은 경우',
+				'Administrator Default 계정 이름 변경'
+			]
+		],
+	'W-02':
+		[
+			['windows002', 'set CODE002=W-02'],
+			[
+				'계정 관리', 'Guset 계정 상태',
+				'상', '3',
+				'양호: Guest 계정이 비활성화 되어 있는 경우\n'
+				'취약: Guest 계정이 활성화 되어 있는 경우',
+				'Guest 계정 비활성화'
+			]
+		],
+	'W-32':
+		[
+			['windows032', 'set CODE032=W-32'],
+			[
+				'패치 관리', '최신 HOT FIX 적용',
+				'상', '3',
+				'양호: 최신 Hotfix가 있는지 주기적으로 모니터링하고 반영하거나, PMS(Patch Management System) '
+				'Agent가 설치되어 자동 패치배포가 적용된 경우\n'
+				'취약: 최신 Hotfix가 있는지 주기적으로 모니터 절차가 없거나, 최신 Hotfix를 반영하지 않은 경우, '
+				'또한 PMS(Patch Management System) Agent가 설치되어 있지 않거나, 설치되어 있으나 자동 패치배포가 적용되지 않은 경우',
 				'Administrator Default 계정 이름 변경'
 			]
 		],

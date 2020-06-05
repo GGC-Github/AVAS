@@ -8,7 +8,6 @@
 ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::::::::: 스크립트 실행 시 언어 설정
-@echo off
 set local
 set getPwd=%cd%
 chcp 437>nul
@@ -19,11 +18,12 @@ set hh=%time:~0,2%
 set hh1=%hh:~0,1%
 set hh2=%hh:~1,1%
 if "%hh1%" == " " set hh=0%hh2%
-set DATETEXT=%DATE:~0,4%%DATE:~5,2%%DATE:~8,2%%hh%%time:~3,2%%time:~6,2%
+set DATETEXT=%hh%%time:~3,2%%time:~6,2%
+for /f "tokens=*" %%a in ('hostname') do set HOSTNAME=%%a
 
 :::::::::: 수집 파일 지정
-set RESULT_COLLECT_FILE=%getPwd%result_collect_%DATETEXT%.xml
-set RESULT_FILE_DATA_FILE=%getPwd%result_file_data_%DATETEXT%.xml
+set RESULT_COLLECT_FILE=%getPwd%\result_collect_%HOSTNAME%_%DATETEXT%.xml
+set RESULT_FILE_DATA_FILE=%getPwd%\result_file_data_%HOSTNAME%_%DATETEXT%.xml
 
 :::::::::: root 계정으로의 실행 여부 확인
 net session>nul 2>&1
@@ -35,7 +35,7 @@ if %errorlevel% NEQ 0 (
 	echo.
 	echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	echo.
-	pause>null
+	pause>nul
 	exit
 )
 
@@ -84,12 +84,7 @@ call :base64encode servicelist.txt
 echo         ^<serviceInfo^>^<![CDATA[ >> %RESULT_COLLECT_FILE%
 for /f  "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
 echo         ]]^>^</serviceInfo^> >> %RESULT_COLLECT_FILE%
-
-secedit /export /cfg secpolicy.txt
-call :base64encode secpolicy.txt
-echo         ^<secpolicyInfo^>^<![CDATA[ >> %RESULT_COLLECT_FILE%
-for /f  "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-echo         ]]^>^</secpolicyInfo^> >> %RESULT_COLLECT_FILE%
 echo     ^</sysInfo^> >> %RESULT_COLLECT_FILE%
 
 echo     ^<fileList^> > %RESULT_FILE_DATA_FILE%
+
