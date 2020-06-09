@@ -19,7 +19,7 @@ del /q "%RESULT_FILE_DATA_FILE%"
 
 exit /b 0
 :base64encode
-	certutil -encode %~1 base64tmp.txt
+	certutil -encode %~1 base64tmp.txt > nul
 	type base64tmp.txt | findstr /v CERTIFICATE > base64.txt
 	del /q %~1
 	del /q base64tmp.txt
@@ -30,8 +30,10 @@ exit /b
     for /f "tokens=*" %%a in ('"type filecksumtmp.txt | findstr /v "%~1 hash""') do set chksumvalue=%%a
     set chksumvalue=%chksumvalue: =%
     if exist filecksum.txt (
-        type filecksum.txt | findstr /bic:%chksumvalue%
-        if %errorlevel% NEQ 0 (
+        type filecksum.txt | findstr /bic:%chksumvalue% > nul
+        if "%ERRORLEVEL%" == "0" (
+            set %~2=DUP
+        ) else (
             echo %chksumvalue% >> filecksum.txt
             set %~2=%chksumvalue%
         )

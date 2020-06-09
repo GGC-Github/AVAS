@@ -31,6 +31,17 @@ windowsWcodeMap = {
 				'Guest 계정 비활성화'
 			]
 		],
+	'W-08':
+		[
+			['windows008', 'set CODE008=W-08'],
+			[
+				'서비스 관리', '하드디스크 기본 공유 제거',
+				'상', '3',
+				'양호: 레지스트리의 AutoShareServer(WinNT : AutoShareWks)가 0이며 기본 공유가 존재하지 않는 경우\n'
+				'취약: 레지스트리의 AutoShareServer(WinNT : AutoShareWks)가 1이거나 기본 공유가 존재하는 경우',
+				'기본 공유 중지 후 레지스트리 값 설정(IPC$, 일반 공유 제외)'
+			]
+		],
 	'W-32':
 		[
 			['windows032', 'set CODE032=W-32'],
@@ -41,7 +52,40 @@ windowsWcodeMap = {
 				'Agent가 설치되어 자동 패치배포가 적용된 경우\n'
 				'취약: 최신 Hotfix가 있는지 주기적으로 모니터 절차가 없거나, 최신 Hotfix를 반영하지 않은 경우, '
 				'또한 PMS(Patch Management System) Agent가 설치되어 있지 않거나, 설치되어 있으나 자동 패치배포가 적용되지 않은 경우',
-				'Administrator Default 계정 이름 변경'
+				'최신 Hotfix 설치'
+			]
+		],
+	'W-35':
+		[
+			['windows035', 'set CODE035=W-35'],
+			[
+				'로그 관리', '원격으로 엑세스 할 수 있는 레지스트리 경로',
+				'상', '3',
+				'양호: Remote Registry Service가 중지되어 있는 경우\n'
+				'취약: Remote Registry Service가 사용 중인 경우'
+				'불필요 시 서비스 중지 및 사용 안함으로 설정'
+			]
+		],
+	'W-37':
+		[
+			['windows037', 'set CODE037=W-37'],
+			[
+				'보안 관리', 'SAM 파일 접근 통제 설정',
+				'상', '3',
+				'양호: SAM 파일 접근권한에 Administrator, System 그룹만 모든 권한으로 설정되어 있는 경우\n'
+				'취약: SAM 파일 접근권한에 Administrator, System 그룹 외 다른 그룹에 권한이 설정되어 있는 경우'
+				'SAM 파일 권한 확인 후 Administrator, System 그룹 외 다른 그룹에 설정된 권한 제거'
+			]
+		],
+	'W-40':
+		[
+			['windows040', 'set CODE040=W-40'],
+			[
+				'보안 관리', '원격 시스템에서 강제로 시스템 종료',
+				'상', '3',
+				'양호: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators"만 존재하는 경우\n'
+				'취약: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators" 외 다른 계정 및 그룹이 존재하는 경우'
+				'원격 시스템에서 강제로 시스템 종료 -> Administrators'
 			]
 		],
 }

@@ -160,9 +160,9 @@ def mergeScript(document, code, getPwd):
     scriptFileName = os.path.join(getPwd, "{}_{}.{}".format(document["assetSubType"][0], dt.strftime("%Y%m%d%H%M%S"),
                                                             fileext))
     if assetname == 'windows':
-        scriptMid = '\n'.join(codefunclist) + codeScript
+        scriptMid = '\n'.join(codefunclist) + '\n' + codeScript
     else:
-        scriptMid = codeScript + libAutoStruct + '\n'.join(codefunclist)
+        scriptMid = codeScript + libAutoStruct + '\n'.join(codefunclist) + '\n'
 
     with open(scriptFileName, 'w', encoding='UTF-8', newline='\n') as newFile:
         newFile.write(fileheader)
