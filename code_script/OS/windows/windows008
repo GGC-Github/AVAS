@@ -1,6 +1,6 @@
 echo     ^<infoElement code="%CODE008%"^> >> %RESULT_COLLECT_FILE%
 
-net share > default_share_tmp.txt
+net share | more > default_share_tmp.txt
 if "%ERRORLEVEL%" == "0" (
     call :base64encode default_share_tmp.txt
     echo         ^<command name="DEFAULT_SHARE"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%

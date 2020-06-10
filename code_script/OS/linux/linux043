@@ -2,5 +2,5 @@ linux043() {
 	code=$1
 	xml_infoElement_tag_start "$code"
 
-	xml_infoElement_tag_end
+	xml_infoElement_tag_end "$code"
 }

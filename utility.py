@@ -23,7 +23,13 @@ OPS = {
 
 
 def base64Decode(setString):
-    return str(base64.b64decode(setString), encoding='utf-8')
+    getString = base64.b64decode(setString)
+    try:
+        reString = getString.decode("UTF-8")
+    except UnicodeDecodeError:
+        reString = getString.decode("ANSI")
+
+    return reString
 
 
 def xmlResultFileParser(resultFile):

@@ -34,7 +34,9 @@ xml_infoElement_tag_start() {
 }
 
 xml_infoElement_tag_end() {
+    code=$1
 	echo "    </infoElement>" >> $RESULT_COLLECT_FILE 2>&1
+	echo "$code Collect"
 }
 
 xml_command_write() {

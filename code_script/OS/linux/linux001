@@ -7,6 +7,6 @@ linux001() {
 	xml_fileInfo_write "/etc/pam.d/login"
 	xml_fileInfo_write "/etc/securetty"
 
-	xml_infoElement_tag_end
+	xml_infoElement_tag_end "$code"
 }
 

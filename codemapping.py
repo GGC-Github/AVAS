@@ -62,7 +62,7 @@ windowsWcodeMap = {
 				'로그 관리', '원격으로 엑세스 할 수 있는 레지스트리 경로',
 				'상', '3',
 				'양호: Remote Registry Service가 중지되어 있는 경우\n'
-				'취약: Remote Registry Service가 사용 중인 경우'
+				'취약: Remote Registry Service가 사용 중인 경우',
 				'불필요 시 서비스 중지 및 사용 안함으로 설정'
 			]
 		],
@@ -73,7 +73,7 @@ windowsWcodeMap = {
 				'보안 관리', 'SAM 파일 접근 통제 설정',
 				'상', '3',
 				'양호: SAM 파일 접근권한에 Administrator, System 그룹만 모든 권한으로 설정되어 있는 경우\n'
-				'취약: SAM 파일 접근권한에 Administrator, System 그룹 외 다른 그룹에 권한이 설정되어 있는 경우'
+				'취약: SAM 파일 접근권한에 Administrator, System 그룹 외 다른 그룹에 권한이 설정되어 있는 경우',
 				'SAM 파일 권한 확인 후 Administrator, System 그룹 외 다른 그룹에 설정된 권한 제거'
 			]
 		],
@@ -84,7 +84,7 @@ windowsWcodeMap = {
 				'보안 관리', '원격 시스템에서 강제로 시스템 종료',
 				'상', '3',
 				'양호: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators"만 존재하는 경우\n'
-				'취약: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators" 외 다른 계정 및 그룹이 존재하는 경우'
+				'취약: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators" 외 다른 계정 및 그룹이 존재하는 경우',
 				'원격 시스템에서 강제로 시스템 종료 -> Administrators'
 			]
 		],

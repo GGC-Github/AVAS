@@ -34,14 +34,13 @@ def analysisMain(fullPath = None):
         for resultFile in fullFileList:
             if 'README.md' == resultFile:
                 continue
-            fileList, infoList, sysList = utility.xmlResultFileParser(
-                os.path.join(fullPath, resultFile))
+            fileList, infoList, sysList = utility.xmlResultFileParser(os.path.join(fullPath, resultFile))
             print('##### Result xml File Parsing Success!')
             analysisRes = []
             for key in sorted(infoList.keys()):
                 codeMap = getattr(codemapping, sysList['osType'].lower() + key.split('-')[0] + 'codeMap')
                 code = codeMap[key][0][0]
-                analyze = getattr(codeanalysisFunc, 'analysis' + code)(key, fileList, infoList[key], sysList, codeMap)
+                analyze = getattr(codeanalysisFunc, 'assetDistribution')(code, key, fileList, infoList[key], sysList, codeMap)
                 analysisRes.append(analyze.analysisFunc())
 
             print('##### Total Item Analysis Success!')

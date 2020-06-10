@@ -1,15 +1,11 @@
 linux042() {
 	code=$1
 	xml_infoElement_tag_start $code
-
-#	xml_commandCode_tag_start "$code"
 	
 	if [ "$OS_VERSION" != "" ] && [ "$OS_KERNEL_VERSION" != "" ]; then
 		xml_command_write "OS_VERSION" "$OS_NAME $OS_VERSION"
 		xml_command_write "OS_KERNEL_VERSION" "$OS_KERNEL_VERSION"
 	fi
 
-#	xml_commandCode_tag_end
-
-	xml_infoElement_tag_end
+	xml_infoElement_tag_end "$code"
 }
