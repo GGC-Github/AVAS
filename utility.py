@@ -29,7 +29,7 @@ def base64Decode(setString):
     except UnicodeDecodeError:
         reString = getString.decode("ANSI")
 
-    return reString
+    return reString.replace('\r', '')
 
 
 def xmlResultFileParser(resultFile):
@@ -47,17 +47,14 @@ def xmlResultFileParser(resultFile):
 
     infoElementList = root.findall("infoElement")
     for infoElement in infoElementList:
-        infoCollectList.update({infoElement.attrib['code']:
-                                    {data.attrib['name']: base64Decode(data.text)
-                                     for data in infoElement if data.tag in 'command'}})
+        infoCollectList.update({infoElement.attrib['code']: {data.attrib['name']: base64Decode(data.text) for data in
+                                                             infoElement if data.tag in 'command'}})
 
     fileList = root.findall("fileList/fileInfo")
     for fileElement in fileList:
-        fileCollectList.update({fileElement.find('filePath').text:
-                                    {data.tag: base64Decode(data.text)
-                                        if data.tag == 'fileData' else data.text
-                                     for data in fileElement
-                                     if data.tag != 'filePath'}})
+        fileCollectList.update(
+            {fileElement.find('filePath').text: {data.tag: base64Decode(data.text) if data.tag == 'fileData'
+            else data.text for data in fileElement if data.tag != 'filePath'}})
 
     return fileCollectList, infoCollectList, sysInfo
 
@@ -219,31 +216,22 @@ def fileStatSetup(setString):
 
 def mergeExeclData(setString):
     fullString = ''
+    data = ''
     for key, value in setString.items():
         if '_PS' in key:
-            data = ''.join("[ {} 프로세스 상태 ]\n\n".format(key.split('_')[0]))
-            data += value
+            data = f'[ {key.split("_")[0]} 프로세스 상태 ]\n'
         elif '_PORT' in key:
-            data = ''.join("[ {} 포트 상태 ]\n\n".format(key.split('_')[0]))
-            data += value
+            data = f'[ {key.split("_")[0]} 포트 상태 ]\n'
         elif '_SYS' in key:
-            data = ''.join("[ {} 서비스 데몬 상태 ]\n\n".format(key.split('_')[0]))
-            data += value
+            data = f'[ {key.split("_")[0]} 서비스 데몬 상태 ]\n'
         elif 'FILEPERM:' in key:
-            data = ''.join("파일명 : {}\n{}".format(key.split('FILEPERM:')[1], value))
+            data = f'파일명 : {key.split("FILEPERM:")[1]}\n'
         elif 'FILEDATA:' in key:
-            data = ''.join("[ 파일명 : {} ]\n\n".format(key.split('FILEDATA:')[1]))
-            data += value
-        elif 'OS_VERSION' in key:
-            data = ''.join("[ {} ]\n\n".format('OS 버전'))
-            data += value
-        elif 'OS_KERNEL_VERSION' in key:
-            data = ''.join("[ {} ]\n\n".format('OS 커널 버전'))
-            data += value
-        else:
-            data = ''.join("{}\n".format(value))
+            data = f'파일명 : {key.split("FILEDATA:")[1]}\n'
+        elif 'CMD:' in key:
+            data = f'[ {key.split("CMD:")[1]} ]\n\n'
 
-        data += '\n'
+        data += f'{value}\n'
         fullString += data
 
     return fullString

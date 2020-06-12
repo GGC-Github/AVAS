@@ -10,10 +10,10 @@ class analysislinux001(codeanalysisBase.analysisBase):
 			flagCnt += self.processCheck(name)
 			if 'ssh' in name: 
 				flagCnt += self.portCheck(':22', name)
-				flagCnt += self.systemctlCheck(['ssh.service', 'sshd.service'], name)
+				flagCnt += self.serviceCheck(['ssh.service', 'sshd.service'], name)
 			else:
 				flagCnt += self.portCheck(':23', name)
-				flagCnt += self.systemctlCheck(['telnet.service', 'telnetd.service'], name)
+				flagCnt += self.serviceCheck(['telnet.service', 'telnetd.service'], name)
 			if flagCnt > 0:
 				if 'ssh' in name:
 					if '/etc/ssh/sshd_config' in self.fileList.keys():
@@ -126,7 +126,7 @@ class analysislinux031(codeanalysisBase.analysisBase):
 		flagCnt = 0
 
 		flagCnt += self.processCheck('sendmail')
-		flagCnt += self.systemctlCheck(['sendmail.service'], 'sendmail')
+		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail')
 
 		if flagCnt > 0:
 			if '/etc/mail/sendmail.cf' in self.fileList.keys():
@@ -155,7 +155,7 @@ class analysislinux032(codeanalysisBase.analysisBase):
 		flagCnt = 0
 
 		flagCnt += self.processCheck('sendmail')
-		flagCnt += self.systemctlCheck(['sendmail.service'], 'sendmail')
+		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail')
 
 		if flagCnt > 0:
 			if '/etc/mail/sendmail.cf' in self.fileList.keys():
@@ -171,8 +171,7 @@ class analysislinux032(codeanalysisBase.analysisBase):
 				privCnt = self.fileDataCheck(
 					dataFile, 1, 'exist', '^[\t ]*O\s+PrivacyOptions\s*=\s*.+$', 'PrivacyOptions')
 				if privCnt == 0:
-					resultCnt += self.dataStrGetValue(
-						dataFile, '^[\t ]*O\s+PrivacyOptions\s*=\s*(.+$)', 'restrictqrun', '!')
+					resultCnt += self.dataStrGetValue(dataFile, '^[\t ]*O\s+PrivacyOptions\s*=\s*(.+$)', 'restrictqrun', '!')
 			if resultCnt > 0:
 				self.fullString[1] = '취약'
 
@@ -183,11 +182,14 @@ class analysislinux032(codeanalysisBase.analysisBase):
 class analysislinux042(codeanalysisBase.analysisBase):
 	def analysisFunc(self):
 		self.fullString[1] = '리뷰'
-		keyList = ['OS_VERSION', 'OS_KERNEL_VERSION']
+		keyList = {
+			'OS_VERSION': 'OS 버전',
+			'OS_KERNEL_VERSION': 'OS 커널 버전'
+		}
 
-		for key in keyList:
+		for key in keyList.keys():
 			if key in self.infoList.keys():
-				self.stat.update({key: self.infoList[key]})
+				self.stat.update({f'CMD:{keyList[key]}': self.infoList[key]})
 
 		self.fullString[2] = self.stat
 		return self.fullString

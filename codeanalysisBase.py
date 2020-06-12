@@ -18,14 +18,11 @@ class analysisBase(metaclass=ABCMeta):
 		pass
 
 	def processCheck(self, getValue):
-		keyValue = "{}{}".format(getValue, '_PS')
-		self.stat.update({keyValue: ''.join("- {} Not found Process\n".format(getValue))})
+		keyValue = f'{getValue}_PS'
+		self.stat.update({keyValue: f'Not found {getValue} Process\n'})
 		flag = 0
 		if 'processInfo' in self.sysList.keys():
-			valueStr = ''.join(
-				"{}\n".format(line) for line in self.sysList['processInfo'].split('\n') if getValue in line
-			)
-
+			valueStr = ''.join("{}\n".format(line) for line in self.sysList['processInfo'].split('\n') if getValue in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
 				flag = 1
@@ -33,8 +30,8 @@ class analysisBase(metaclass=ABCMeta):
 		return flag
 
 	def portCheck(self, getValue, srvName):
-		keyValue = "{}{}".format(srvName, '_PORT')
-		self.stat.update({keyValue: ''.join("- {} Not found Port\n".format(srvName))})
+		keyValue = f'{srvName}_PORT'
+		self.stat.update({keyValue: f'Not found {srvName} Port\n'})
 		flag = 0
 		if 'portInfo' in self.sysList.keys():
 			valueStr = ''.join(
@@ -46,13 +43,13 @@ class analysisBase(metaclass=ABCMeta):
 
 		return flag
 
-	def systemctlCheck(self, getValue, srvName):
-		keyValue = "{}{}".format(srvName, '_SYS')
-		self.stat.update({keyValue: ''.join("- {} Not found Service\n".format(srvName))})
+	def serviceCheck(self, getValue, srvName):
+		keyValue = f'{srvName}_SYS'
+		self.stat.update({keyValue: f'Not found {srvName} Service\n'})
 		flag = 0
-		if 'systemctlInfo' in self.sysList.keys():
+		if 'serviceInfo' in self.sysList.keys():
 			valueStr = ''.join(
-				"{}\n".format(line) for line in self.sysList['systemctlInfo'].split('\n') for value in getValue
+				"{}\n".format(line) for line in self.sysList['serviceInfo'].split('\n') for value in getValue
 				if value in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
@@ -63,8 +60,8 @@ class analysisBase(metaclass=ABCMeta):
 	def fileDataCheck(self, fileName, defaultCnt, parseKey, pattern, confAttr):
 		result = defaultCnt
 		fileContent = self.fileList[fileName]
-		fileKey = "{}{}".format('FILEDATA:', fileName)
-		self.stat.update({fileKey: ''.join("- {} Not Found Configuration(!)\n".format(confAttr))})
+		fileKey = f'FILEDATA:{fileName}'
+		self.stat.update({fileKey: f'Not Found {confAttr} Configuration(!)\n'})
 		if fileContent is not None:
 			com = re.compile(pattern, re.MULTILINE)
 			reg = re.findall(com, fileContent['fileData'])
@@ -79,7 +76,7 @@ class analysisBase(metaclass=ABCMeta):
 		return result	
 
 	def dataNumGetValue(self, name, pattern, compValue, compType):
-		fileKey = "{}{}".format('FILEDATA:', name)
+		fileKey = f'FILEDATA:{name}'
 		result = 0
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
@@ -101,7 +98,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def dataStrGetValue(self, name, pattern, compValue, compType):
 		result = 0
-		fileKey = "{}{}".format('FILEDATA:', name)
+		fileKey = f'FILEDATA:{name}'
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
 		if reg:
@@ -113,21 +110,46 @@ class analysisBase(metaclass=ABCMeta):
 				if compValue in reg[0]:
 					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 					result = 1
+			elif compType == '#':
+				if compValue in reg[0]:
+					result = 1
+
+		return result
+
+	def cmdStrGetValue(self, keyName, pattern, infoKey, compValue, compType):
+		result = 0
+		dataValue = self.infoList[infoKey]
+		self.stat.update({keyName: dataValue})
+		com = re.compile(pattern, re.MULTILINE)
+		reg = re.findall(com, dataValue)
+		if reg:
+			# compValue 값과 다를 경우 취약
+			if compType == '!':
+				if compValue not in reg[0]:
+					self.stat.update({keyName: self.stat[keyName].replace('\n', '(!)\n')})
+					result = 1
+			# compValue 값과 같을 경우 취약
+			elif compType == '=':
+				if compValue in reg[0]:
+					self.stat.update({keyName: self.stat[keyName].replace('\n', '(!)\n')})
+					result = 1
+			# 단순 CMD 데이타 확인
+			elif compType == '#':
+				if compValue in reg[0]:
+					result = 1
 
 		return result
 
 	def fileStatCheck(self, fileName, compPerm, compOwner, compType):
 		cmpOper = utility.OPS[compType]
-		fileKey = "{}{}".format('FILEPERM:', fileName)
+		fileKey = f'FILEPERM:{fileName}'
 		if 'fileRealStat' in self.fileList[fileName].keys():
 			fileStat = self.fileList[fileName]['fileRealStat'].split('|')
-			self.stat.update( { fileKey : utility.fileStatSetup(fileStat) } )
-			self.stat.update( { fileKey : utility.fileStatSetup(
-											self.fileList[fileName]['fileStat']
-											.split('|')) } )
+			self.stat.update({fileKey: utility.fileStatSetup(fileStat)})
+			self.stat.update({fileKey: utility.fileStatSetup(self.fileList[fileName]['fileStat'].split('|'))})
 		else:
 			fileStat = self.fileList[fileName]['fileStat'].split('|')
-			self.stat.update( { fileKey : utility.fileStatSetup(fileStat) } )
+			self.stat.update({fileKey: utility.fileStatSetup(fileStat)})
 
 		# 파일 또는 디렉터리에 권한이 없을 시에 0으로 들어오는 값 수정
 		filePerm = fileStat[1] if fileStat[1] != '0' else '0' * len(compPerm)
