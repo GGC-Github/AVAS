@@ -19,7 +19,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def processCheck(self, getValue):
 		keyValue = f'{getValue}_PS'
-		self.stat.update({keyValue: f'Not found {getValue} Process\n'})
+		self.stat.update({keyValue: f'- Not found {getValue} Process\n'})
 		flag = 0
 		if 'processInfo' in self.sysList.keys():
 			valueStr = ''.join("{}\n".format(line) for line in self.sysList['processInfo'].split('\n') if getValue in line)
@@ -31,7 +31,7 @@ class analysisBase(metaclass=ABCMeta):
 
 	def portCheck(self, getValue, srvName):
 		keyValue = f'{srvName}_PORT'
-		self.stat.update({keyValue: f'Not found {srvName} Port\n'})
+		self.stat.update({keyValue: f'- Not found {srvName} Port\n'})
 		flag = 0
 		if 'portInfo' in self.sysList.keys():
 			valueStr = ''.join(
@@ -43,25 +43,28 @@ class analysisBase(metaclass=ABCMeta):
 
 		return flag
 
-	def serviceCheck(self, getValue, srvName):
+	def serviceCheck(self, getValue, srvName, compValue = None):
 		keyValue = f'{srvName}_SYS'
-		self.stat.update({keyValue: f'Not found {srvName} Service\n'})
+		self.stat.update({keyValue: f'- Not found {srvName} Service\n'})
 		flag = 0
+		if compValue is None:
+			compValue = srvName
 		if 'serviceInfo' in self.sysList.keys():
 			valueStr = ''.join(
 				"{}\n".format(line) for line in self.sysList['serviceInfo'].split('\n') for value in getValue
 				if value in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
-				if 'loaded active' in self.stat[keyValue]:
+				if compValue in self.stat[keyValue]:
 					flag = 1
+
 		return flag
 	
 	def fileDataCheck(self, fileName, defaultCnt, parseKey, pattern, confAttr):
 		result = defaultCnt
 		fileContent = self.fileList[fileName]
 		fileKey = f'FILEDATA:{fileName}'
-		self.stat.update({fileKey: f'Not Found {confAttr} Configuration(!)\n'})
+		self.stat.update({fileKey: f'- Not Found {confAttr} Configuration(!)\n'})
 		if fileContent is not None:
 			com = re.compile(pattern, re.MULTILINE)
 			reg = re.findall(com, fileContent['fileData'])
@@ -116,27 +119,36 @@ class analysisBase(metaclass=ABCMeta):
 
 		return result
 
-	def cmdStrGetValue(self, keyName, pattern, infoKey, compValue, compType):
+	def cmdStrGetValue(self, keyName, pattern, infoKey, compType, compValue = None):
 		result = 0
+		reString = ''
 		dataValue = self.infoList[infoKey]
-		self.stat.update({keyName: dataValue})
-		com = re.compile(pattern, re.MULTILINE)
-		reg = re.findall(com, dataValue)
-		if reg:
-			# compValue 값과 다를 경우 취약
-			if compType == '!':
-				if compValue not in reg[0]:
-					self.stat.update({keyName: self.stat[keyName].replace('\n', '(!)\n')})
-					result = 1
-			# compValue 값과 같을 경우 취약
-			elif compType == '=':
-				if compValue in reg[0]:
-					self.stat.update({keyName: self.stat[keyName].replace('\n', '(!)\n')})
-					result = 1
-			# 단순 CMD 데이타 확인
-			elif compType == '#':
-				if compValue in reg[0]:
-					result = 1
+		if dataValue is not None:
+			for data in dataValue.splitlines():
+				com = re.compile(pattern, re.MULTILINE)
+				reg = re.findall(com, data)
+				if reg:
+					# compValue 값과 다를 경우 취약
+					if compType == '!':
+						if compValue not in reg[0]:
+							data += '(!)'
+							result = 1
+					# compValue 값과 같을 경우 취약
+					elif compType == '=':
+						if compValue in reg[0]:
+							data += '(!)'
+							result = 1
+					elif compType == '|':
+						for comp in compValue.split('|'):
+							if comp in reg[0]:
+								data += '(!)'
+								result = 1
+					# 단순 CMD 데이타 확인
+					elif compType == '#':
+						result = 1
+				reString += f'{data}\n'
+
+		self.stat.update({keyName: reString})
 
 		return result
 

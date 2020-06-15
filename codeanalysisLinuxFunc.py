@@ -10,10 +10,10 @@ class analysislinux001(codeanalysisBase.analysisBase):
 			flagCnt += self.processCheck(name)
 			if 'ssh' in name: 
 				flagCnt += self.portCheck(':22', name)
-				flagCnt += self.serviceCheck(['ssh.service', 'sshd.service'], name)
+				flagCnt += self.serviceCheck(['ssh.service', 'sshd.service'], name, 'loaded active')
 			else:
 				flagCnt += self.portCheck(':23', name)
-				flagCnt += self.serviceCheck(['telnet.service', 'telnetd.service'], name)
+				flagCnt += self.serviceCheck(['telnet.service', 'telnetd.service'], name, 'loaded active')
 			if flagCnt > 0:
 				if 'ssh' in name:
 					if '/etc/ssh/sshd_config' in self.fileList.keys():
@@ -126,7 +126,7 @@ class analysislinux031(codeanalysisBase.analysisBase):
 		flagCnt = 0
 
 		flagCnt += self.processCheck('sendmail')
-		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail')
+		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail', 'loaded active')
 
 		if flagCnt > 0:
 			if '/etc/mail/sendmail.cf' in self.fileList.keys():
@@ -155,7 +155,7 @@ class analysislinux032(codeanalysisBase.analysisBase):
 		flagCnt = 0
 
 		flagCnt += self.processCheck('sendmail')
-		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail')
+		flagCnt += self.serviceCheck(['sendmail.service'], 'sendmail', 'loaded active')
 
 		if flagCnt > 0:
 			if '/etc/mail/sendmail.cf' in self.fileList.keys():
