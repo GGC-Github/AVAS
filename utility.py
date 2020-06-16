@@ -11,14 +11,20 @@ import stat
 
 LIBDIR = os.path.join(os.getcwd(), 'lib_script')
 SCRIPTDIR = os.path.join(os.getcwd(), 'code_script')
-
+# in : 포함되지 않으면 취약
+# not in : 포함되어 있으면 취약
+# == : 같으면 취약
+# != : 같지 않으면 취약
+# | : 둘 중 하나라도 포함되어있으면 취약
+# # : 데이타 존재 여부 확인
 OPS = {
     '<': operator.lt,
     '<=': operator.le,
     '==': operator.eq,
     '!=': operator.ne,
     '>=': operator.ge,
-    '>': operator.gt
+    '>': operator.gt,
+    'in': operator.contains,
 }
 
 
@@ -160,8 +166,7 @@ def mergeScript(document, code, getPwd):
     if LIBAUTOFILES is not None:
         libAutoStruct = readScript(LIBAUTOFILES, LIBDIR)
 
-    scriptFileName = os.path.join(getPwd, "{}_{}.{}".format(document["assetSubType"][0], dt.strftime("%Y%m%d%H%M%S"),
-                                                            fileext))
+    scriptFileName = os.path.join(getPwd, f'{document["assetSubType"][0]}_{dt.strftime("%Y%m%d%H%M%S")}.{fileext}')
     if assetname == 'windows':
         scriptMid = '\n'.join(codefunclist) + '\n' + codeScript
     else:
@@ -208,9 +213,8 @@ def printMainUsage():
 
 
 def fileStatSetup(setString):
-    data = "[ 권한 = {}({}), 소유자 = {}({}), 소유그룹 = {}({}) ]".format(
-        setString[0], setString[1], setString[5], setString[6],
-        setString[7], setString[8])
+    data = f'[ 권한 = {setString[0]}({setString[1]}), 소유자 = {setString[5]}({setString[6]}),' \
+           f'소유그룹 = {setString[7]}({setString[8]}) ]'
     return data
 
 

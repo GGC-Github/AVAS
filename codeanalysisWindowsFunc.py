@@ -18,7 +18,7 @@ class analysiswindows001(codeanalysisBase.analysisBase):
         if 'ADMIN_ACCOUNT' in self.infoList.keys():
             activeCnt += self.cmdStrGetValue(keyList[0], '^Account active[ \t]*(Yes)$', 'ADMIN_ACCOUNT', '#')
         else:
-            self.stat.update({keyList[0]: '- Not Found "net user Administrator" Result\n'})
+            self.stat.update({keyList[0]: f'- Not Found "net user Administrator" Result\n'})
 
         if 'Local Security Policy' in self.fileList.keys():
             enableFlag = self.fileDataCheck(
@@ -31,8 +31,9 @@ class analysiswindows001(codeanalysisBase.analysisBase):
             newnameFlag = self.fileDataCheck(
                 'Local Security Policy', 1, 'exist', '^NewAdministratorName.*$', 'NewAdministratorName')
             if newnameFlag == 0:
-                resultCnt = self.dataStrGetValue(
-                    'Local Security Policy', '^NewAdministratorName[ \t=]*[\"]*([\\S]+[^\"])[\"]*$', 'Administrator', '=')
+                resultCnt = self.dataStrGetValue('Local Security Policy',
+                                                 '^NewAdministratorName[ \t=]*[\"]*([\S]+[^\"])[\"]*[\S]$',
+                                                 'Administrator', '==')
                 self.stat[keyList[2]] = self.stat.pop('FILEDATA:Local Security Policy')
 
         if resultCnt > 0:
@@ -53,10 +54,10 @@ class analysiswindows002(codeanalysisBase.analysisBase):
             'CMD:Guest 계정 활성화 여부(net user)',
             'CMD:Guest 계정 활성화 여부(Local Security Policy)',
         ]
-        if 'ADMIN_ACCOUNT' in self.infoList.keys():
+        if 'GUEST_ACCOUNT' in self.infoList.keys():
             activeCnt += self.cmdStrGetValue(keyList[0], '^Account active[ \t]*(Yes)$', 'GUEST_ACCOUNT', '#')
         else:
-            self.stat.update({keyList[0]: '- Not Found "net user Guest" Result\n'})
+            self.stat.update({keyList[0]: f'- Not Found "net user Guest" Result\n'})
 
         if 'Local Security Policy' in self.fileList.keys():
             enableFlag = self.fileDataCheck(
@@ -83,9 +84,9 @@ class analysiswindows008(codeanalysisBase.analysisBase):
             'CMD:기본 공유 설정 여부(net share)':
                 ['^[\S]+[ \t]+[\S]+[ \t]+(.*)', 'DEFAULT_SHARE', '|', '기본 공유|Default share', 'net share'],
             'CMD:AutoShareServer 레지스트리 설정':
-                ['^[ \t]*AutoShareServer.*0x(.)$', 'AUTOSHARE_SERVER_REG', '=', '1', 'reg query AutoShareServer'],
+                ['^[ \t]*AutoShareServer.*0x(.)$', 'AUTOSHARE_SERVER_REG', '==', '1', 'reg query AutoShareServer'],
             'CMD:AutoShareWks 레지스트리 설정':
-                ['^[ \t]*AutoShareWks.*0x(.)$', 'AUTOSHARE_WKS_REG', '=', '1', 'reg query AutoShareWks']
+                ['^[ \t]*AutoShareWks.*0x(.)$', 'AUTOSHARE_WKS_REG', '==', '1', 'reg query AutoShareWks']
         }
 
         for key in keyList.keys():
@@ -142,11 +143,11 @@ class analysiswindows035(codeanalysisBase.analysisBase):
             self.stat.update({'Remote Registry_SYS': f'{valueStr} Service Running(!)\n'})
         if 'REMOTE_REGISTRY_REG' in self.infoList.keys():
             resultCnt += self.cmdStrGetValue('CMD:Remote Registry 서비스 시작 유형', '^[ \t]*Start.*0x(.)$',
-                                             'REMOTE_REGISTRY_REG', '=', '2')
+                                             'REMOTE_REGISTRY_REG', '==', '2')
             valueStr = self.stat['CMD:Remote Registry 서비스 시작 유형']
             self.stat.update({'CMD:Remote Registry 서비스 시작 유형': f'{valueStr} {desStr}\n'})
         else:
-            self.stat.update({'CMD:Remote Registry 서비스 시작 유형': f'- Not Found Remote Registry Start Result\n'})
+            self.stat.update({'CMD:Remote Registry 서비스 시작 유형': '- Not Found Remote Registry Start Result\n'})
 
         if resultCnt > 0:
             self.fullString[1] = '취약'
@@ -156,16 +157,52 @@ class analysiswindows035(codeanalysisBase.analysisBase):
 
 
 class analysiswindows037(codeanalysisBase.analysisBase):
+    # 2018 W-37 (상)
+    # 보안 관리 - SAM 파일 접근 통제 설정
+    # 양호: SAM 파일 접근권한에 Administrator, System 그룹만 모든 권한으로 설정되어 있는 경우
+    # 취약: SAM 파일 접근권한에 Administrator, System 그룹 외 다른 그룹에 권한이 설정되어 있는 경우
     def analysisFunc(self):
-        self.stat.update(
-            {"{}{}".format('FILEDATA:', '/etc/ssh/sshd_config'): '- PermitRootLogin Not Found Configuration\n'})
+        resultCnt = 0
+        if 'SAM_FILE_PERM' in self.infoList.keys():
+            valueStr = self.infoList['SAM_FILE_PERM']
+            if valueStr is not None:
+                resultList = ''.join(
+                    [data + '\n' if 'system:' in data.lower() or 'administrators:' in data.lower() else data + '(!)\n'
+                     for data in valueStr.replace('\n\n', '\n').splitlines()]
+                )
+                if '(!)' in resultList:
+                    resultCnt += 1
+                self.stat.update({'CMD:SAM 파일 접근 권한': resultList})
+            else:
+                self.stat.update({'CMD:SAM 파일 접근 권한': '- Not Found SAM file Permission Result\n'})
+        else:
+            self.stat.update({'CMD:SAM 파일 접근 권한': '- Not Found SAM file Permission Result\n'})
+
+        if resultCnt > 0:
+            self.fullString[1] = '취약'
+
         self.fullString[2] = self.stat
         return self.fullString
 
 
 class analysiswindows040(codeanalysisBase.analysisBase):
+    # 2018 W-40 (상)
+    # 보안 관리 - 원격 시스템에서 강제로 시스템 종료
+    # 양호: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators"만 존재하는 경우
+    # 취약: "원격 시스템에서 강제로 시스템 종료" 정책에 "Administrators"외 다른 계정 및 그룹이 존재하는 경우
     def analysisFunc(self):
-        self.stat.update(
-            {"{}{}".format('FILEDATA:', '/etc/ssh/sshd_config'): '- PermitRootLogin Not Found Configuration\n'})
+        resultCnt = 0
+        if 'Local Security Policy' in self.fileList.keys():
+            enableFlag = self.fileDataCheck(
+                'Local Security Policy', 1, 'exist', '^SeRemoteShutdownPrivilege.*$', 'SeRemoteShutdownPrivilege')
+            if enableFlag == 0:
+                resultCnt += self.dataStrGetValue('Local Security Policy', '^SeRemoteShutdownPrivilege[ \t=]*(.*)$',
+                                                  '*S-1-5-32-544', '!=')
+                self.stat['CMD:SeRemoteShutdownPrivilege 설정 (Local Security Policy)'] = \
+                    self.stat.pop('FILEDATA:Local Security Policy')
+
+        if resultCnt > 0:
+            self.fullString[1] = '취약'
+
         self.fullString[2] = self.stat
         return self.fullString

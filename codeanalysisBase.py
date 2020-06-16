@@ -22,7 +22,7 @@ class analysisBase(metaclass=ABCMeta):
 		self.stat.update({keyValue: f'- Not found {getValue} Process\n'})
 		flag = 0
 		if 'processInfo' in self.sysList.keys():
-			valueStr = ''.join("{}\n".format(line) for line in self.sysList['processInfo'].split('\n') if getValue in line)
+			valueStr = ''.join(f'{line}\n' for line in self.sysList['processInfo'].split('\n') if getValue in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
 				flag = 1
@@ -34,9 +34,7 @@ class analysisBase(metaclass=ABCMeta):
 		self.stat.update({keyValue: f'- Not found {srvName} Port\n'})
 		flag = 0
 		if 'portInfo' in self.sysList.keys():
-			valueStr = ''.join(
-				"{}\n".format(line) for line in self.sysList['portInfo'].split('\n') if getValue in line
-			)
+			valueStr = ''.join(f'{line}\n' for line in self.sysList['portInfo'].split('\n') if getValue in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
 				flag = 1
@@ -50,9 +48,7 @@ class analysisBase(metaclass=ABCMeta):
 		if compValue is None:
 			compValue = srvName
 		if 'serviceInfo' in self.sysList.keys():
-			valueStr = ''.join(
-				"{}\n".format(line) for line in self.sysList['serviceInfo'].split('\n') for value in getValue
-				if value in line)
+			valueStr = ''.join(f'{line}\n' for line in self.sysList['serviceInfo'].split('\n') for value in getValue if value in line)
 			if valueStr != '':
 				self.stat.update({keyValue: valueStr})
 				if compValue in self.stat[keyValue]:
@@ -69,7 +65,7 @@ class analysisBase(metaclass=ABCMeta):
 			com = re.compile(pattern, re.MULTILINE)
 			reg = re.findall(com, fileContent['fileData'])
 			if reg:
-				self.stat.update({fileKey: ''.join("{}\n".format(line) for line in reg)})
+				self.stat.update({fileKey: ''.join(f'{line}\n' for line in reg)})
 				if parseKey == 'exist':
 					result = 0
 				elif parseKey == '!exist':
@@ -81,19 +77,12 @@ class analysisBase(metaclass=ABCMeta):
 	def dataNumGetValue(self, name, pattern, compValue, compType):
 		fileKey = f'FILEDATA:{name}'
 		result = 0
+
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
-
-		if compType == '<':
-			if reg and int(reg[0]) < compValue:
-				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
-				result = 1
-		elif compType == '>':
-			if reg and int(reg[0]) > compValue:
-				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
-				result = 1
-		elif compType == '=':
-			if reg and int(reg[0]) == compValue:
+		if reg:
+			cmpOper = utility.OPS[compType]
+			if not cmpOper(compValue, reg[0]):
 				self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 				result = 1
 
@@ -105,16 +94,17 @@ class analysisBase(metaclass=ABCMeta):
 		com = re.compile(pattern, re.MULTILINE)
 		reg = re.findall(com, self.stat[fileKey])
 		if reg:
-			if compType == '!':
+			if compType == '#':
+				if compValue in reg[0]:
+					result = 1
+			elif compType == 'not in':
 				if compValue not in reg[0]:
 					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
 					result = 1
-			elif compType == '=':
-				if compValue in reg[0]:
+			else:
+				cmpOper = utility.OPS[compType]
+				if cmpOper(compValue, reg[0]):
 					self.stat.update({fileKey: self.stat[fileKey].replace('\n', '(!)\n')})
-					result = 1
-			elif compType == '#':
-				if compValue in reg[0]:
 					result = 1
 
 		return result
@@ -128,24 +118,21 @@ class analysisBase(metaclass=ABCMeta):
 				com = re.compile(pattern, re.MULTILINE)
 				reg = re.findall(com, data)
 				if reg:
-					# compValue 값과 다를 경우 취약
-					if compType == '!':
+					if compType == '#':
+						result = 1
+					elif compType == 'not in':
 						if compValue not in reg[0]:
-							data += '(!)'
 							result = 1
-					# compValue 값과 같을 경우 취약
-					elif compType == '=':
-						if compValue in reg[0]:
-							data += '(!)'
-							result = 1
-					elif compType == '|':
+					elif compType == "|":
 						for comp in compValue.split('|'):
 							if comp in reg[0]:
 								data += '(!)'
 								result = 1
-					# 단순 CMD 데이타 확인
-					elif compType == '#':
-						result = 1
+					else:
+						cmpOper = utility.OPS[compType]
+						if cmpOper(compValue, reg[0]):
+							data += '(!)'
+							result = 1
 				reString += f'{data}\n'
 
 		self.stat.update({keyName: reString})
