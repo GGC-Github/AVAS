@@ -10,7 +10,7 @@ class analysiswindows001(codeanalysisBase.analysisBase):
     def analysisFunc(self):
         resultCnt = 0
         activeCnt = 0
-        keyList= [
+        keyList = [
             'CMD:Administrator 계정 활성화 여부(net user)',
             'CMD:Administrator 계정 활성화 여부(Local Security Policy)',
             'CMD:Administrator 계정명 변경 여부(Local Security Policy)'

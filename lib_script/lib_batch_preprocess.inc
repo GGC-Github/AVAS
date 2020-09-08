@@ -1,4 +1,3 @@
-@echo off
 set local
 chcp 437>nul
 PUSHD %~DP0

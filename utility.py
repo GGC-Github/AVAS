@@ -84,18 +84,18 @@ CODE : {}
 def codeParser(codeList, subType):
     totalList = []
     for code in codeList:
-        reg = re.findall(r'(\w+)-(\w+)', code)
+        reg = re.findall(r"(\w+)-(\w+)", code)
         if len(reg) == 0 or (len(reg) == 1 and '~' in code):
             return None
 
-        if len(reg) == 2:
-            listTmp = ["{}-{:02}".format(reg[0][0], x) for x in range(int(reg[0][1]),
+        if len(reg) == 2 and reg[0][0] == reg[1][0]:
+            listTmp = [f"{reg[0][0]}-{x:02}" for x in range(int(reg[0][1]),
                                                                       int(reg[1][1]) + 1)]
             totalList.extend(listTmp)
         elif len(reg) == 1 and reg[0][1].lower() == 'all':
             codemap = getattr(codemapping, subType[0].lower() + reg[0][0] + 'codeMap')
             codecnt = 3 if reg[0][0] == 'SRV' else 2
-            totalList += ["{}-{:0{}}".format(reg[0][0], int(x.split('-')[1]), codecnt) for x in codemap.keys()]
+            totalList += [f"{reg[0][0]}-{int(x.split('-')[1]):0{codecnt}}" for x in codemap.keys()]
         else:
             if isinstance(code, list):
                 totalList.extend(code)

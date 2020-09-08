@@ -6,5 +6,4 @@ linux031() {
 	xml_fileInfo_write "/etc/mail/sendmail.cf"
 
 	xml_infoElement_tag_end "$code"
-
 }
