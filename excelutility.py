@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-import excelstyle
-import utility
 import io
+import os
 from openpyxl import load_workbook
+import excelstyle
+import analysisutility as utility
 import datetime
-import warnings
-warnings.simplefilter("ignore", UserWarning)
 
 
-def makeExcelReport(analysisRes, sysList, resultNum):
+def makeExcelReport(analysisRes, sysList):
     dt = datetime.datetime.now()
 
     wb = load_workbook(io.BytesIO(excelstyle.defaultexcel))
@@ -24,9 +23,9 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     wsResSum['D9'] = dt.strftime("%Y-%m-%d %H:%M:%S")
 
 #   진단 현황 분포표
-    impdict.update({'양호': [int(data[3][3]) for data in analysisRes if data[1] in '양호']})
-    impdict.update({'취약': [int(data[3][3]) for data in analysisRes if data[1] in '취약']})
-    impdict.update({'리뷰': [int(data[3][3]) for data in analysisRes if data[1] in '리뷰']})
+    impdict.update({'양호': [int(data[3]['ImportantScore']) for data in analysisRes if data[1] in '양호']})
+    impdict.update({'취약': [int(data[3]['ImportantScore']) for data in analysisRes if data[1] in '취약']})
+    impdict.update({'리뷰': [int(data[3]['ImportantScore']) for data in analysisRes if data[1] in '리뷰']})
 
     # 상태 별 결과 분포표
     for cnt, val in zip(range(0, 4), [len(analysisRes), len(impdict['양호']), len(impdict['취약']), len(impdict['리뷰'])]):
@@ -50,10 +49,10 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     wsResSum['D2'].font = excelstyle.headredfont
 
 #   진단 결과 내역
-    analysisRes.sort(key=lambda x: x[3][0])
+    analysisRes.sort(key=lambda x: x[3]['Category'])
     for cnt in range(0, len(analysisRes)):
-        inputdata = [analysisRes[cnt][3][0], analysisRes[cnt][0], analysisRes[cnt][3][1],
-                     int(analysisRes[cnt][3][3]), analysisRes[cnt][1]]
+        inputdata = [analysisRes[cnt][3]['Category'], analysisRes[cnt][0], analysisRes[cnt][3]['Name'],
+                     int(analysisRes[cnt][3]['ImportantScore']), analysisRes[cnt][1]]
         for num, idx in zip([0, 2, 3, 10, 11], range(0, len(inputdata))):
             wsResSum.cell(row=36 + cnt, column=2 + num).font = excelstyle.normalfont
             if num == 10 or num == 11:
@@ -79,10 +78,10 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     rownum = 3
     for cnt in range(0, len(analysisRes)):
         inputdata = [
-            [' ', ' '], ['구분', analysisRes[cnt][3][0]], ['코드', analysisRes[cnt][0]],
-            ['항목', analysisRes[cnt][3][1]], ['중요도', int(analysisRes[cnt][3][3])],
-            ['진단 결과', analysisRes[cnt][1]], ['판단 기준', analysisRes[cnt][3][4]],
-            ['상세 현황', analysisRes[cnt][2]], ['조치 방법', analysisRes[cnt][3][5]]
+            [' ', ' '], ['구분', analysisRes[cnt][3]['Category']], ['코드', analysisRes[cnt][0]],
+            ['항목', analysisRes[cnt][3]['Name']], ['중요도', int(analysisRes[cnt][3]['ImportantScore'])],
+            ['진단 결과', analysisRes[cnt][1]], ['판단 기준', analysisRes[cnt][3]['Criterion']],
+            ['상세 현황', analysisRes[cnt][2]], ['조치 방법', analysisRes[cnt][3]['ActionPlan']]
         ]
         for idx in range(0, 9):
             for colcnt in range(0, 2):
@@ -107,8 +106,8 @@ def makeExcelReport(analysisRes, sysList, resultNum):
     wsResDetHor = wb['진단 결과 상세(가로)']
     for cnt in range(0, len(analysisRes)):
         inputdata = [
-            analysisRes[cnt][3][0], analysisRes[cnt][0], analysisRes[cnt][3][1], int(analysisRes[cnt][3][3]),
-            analysisRes[cnt][1], analysisRes[cnt][3][4], analysisRes[cnt][2], analysisRes[cnt][3][5]
+            analysisRes[cnt][3]['Category'], analysisRes[cnt][0], analysisRes[cnt][3]['Name'], int(analysisRes[cnt][3]['ImportantScore']),
+            analysisRes[cnt][1], analysisRes[cnt][3]['Criterion'], analysisRes[cnt][2], analysisRes[cnt][3]['ActionPlan']
         ]
         for idx in range(0, 8):
             wsResDetHor.cell(row=5 + cnt, column=2 + idx).border = excelstyle.thinborder
@@ -141,4 +140,4 @@ def makeExcelReport(analysisRes, sysList, resultNum):
         sysList['osName'], sysList['hostname'], dt.strftime("%Y%m%d%H%M%S"))
     )
 
-    wb.save(filename=fileName)
+    wb.save(filename=os.path.join(os.getcwd(), 'ExcelDir', fileName))

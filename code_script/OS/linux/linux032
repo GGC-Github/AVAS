@@ -1,9 +1,0 @@
-linux032() {
-	code=$1
-	xml_infoElement_tag_start "$code"
-
-	xml_fileInfo_write "/etc/sendmail.cf"
-	xml_fileInfo_write "/etc/mail/sendmail.cf"
-
-	xml_infoElement_tag_end "$code"
-}

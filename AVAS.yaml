@@ -1,57 +1,18 @@
-#######################################################################################################
-#
-# @File AVAS.yaml - AVAS 수집 모듈 설정 파일
-# 
-# @Version 0.1
-#
-# @Description
-# - 각 자산에 대한 최종 수집 스크립트를 생성하려면 이 파일을 먼저 설정하십시오.
-# - 아래의 자산 설정 옵션 설명과 예시를 보고 따라 설정 하십시오.
-#
-# @Options
-# - assetType
-# 	* 이 옵션은 상세 자산을 설정하기 전에 자산 유형 설정을 위한 옵션(eg OS, WEB, WAS, DB, NETWORK)
-# 	* 현재 OS 자산 유형만 사용 가능
-#
-# - assetSubType
-#	* 이 옵션은 assetType의 하위 옵션으로 상세 자산을 설정하기 위한 옵션
-#   * (eg LINUX, AIX, HP-UX, SUNOS, MARIADB, APACHE, TOMCAT...)
-#	* 현재 LINUX, WINDOW 자산 사용 가능
-#
-# - assetEnv
-#   * 이 옵션은 assetType 옵션이 DB 또는 WEB/WAS로 설정되어 있는 경우 해당 자산이 설치되어 있는 환경을 지정
-#   * (eg LINUX, AIX, HP-UX, SUNOS, WINDOWS)
-#
-# - assetCode
-#	* 이 옵션은 진단하고자 자산의 항목 코드를 지정
-#	* 옵션 설정 방법은 3가지로 가능
-#		1. 항목 하나씩 지정하는 방법 (eg U-01,U-02,U-03)
-#		2. '~'를 사용하여 범위를 지정하는 방법 (eg U-01 ~ U-10)
-#		3. 해당 항목 코드의 전체 항목을 진단하고자 할 때 'ALL'을 지정하는 방법 (eg U-ALL)
-# Ex)
-#	assetType:
-#		- WAS
-#	assetSubType:
-#		- JBOSS
-#   assetEnv:
-#       - LINUX
-#	assetCode:
-#		- U-01
-#		- U-02
-#		- U-03
-#		or
-#		- U-01 ~ U-10
-#		or
-#		- U-ALL or U-all
-#
-#######################################################################################################
-
 assetInfo:
     assetType:
-        - OS
+        - LINUX
     assetSubType:
-        - WINDOWS
-    assetEnv:
-        - ~
+        - OS
     assetCode:
-        - W-all
+        - U-01
+        - U-02
+        - U-03
+        - U-07
+        - U-08
+        - U-all
+        - U-ALL
+        - U-10 ~ U-20
+#        - W-01
+#        - W-32
+#        - W-08
+#        - W-02

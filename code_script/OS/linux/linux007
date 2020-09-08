@@ -1,8 +1,0 @@
-linux007() {
-	code=$1
-	xml_infoElement_tag_start "$code"
-
-	xml_fileInfo_write "/etc/passwd"
-
-	xml_infoElement_tag_end "$code"
-}

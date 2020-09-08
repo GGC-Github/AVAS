@@ -1,1 +1,0 @@
-This directory is where you place the acquisition result files for the analysis module.
