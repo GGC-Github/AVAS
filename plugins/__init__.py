@@ -234,6 +234,7 @@ class PluginCollection(object):
 						self.plugins.append(memClass())
 
 	def loadCodeAllPackage(self, package, codeAttr):
+		print(self.subType)
 		imported = import_module(f'{package}.{self.type}.{self.subType}')
 		for _, name, ispkg in pkgutil.iter_modules(imported.__path__, imported.__name__ + '.'):
 			pluginModule = import_module(name)
