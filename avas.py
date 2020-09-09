@@ -1,4 +1,5 @@
 import os
+import glob
 import argparse
 import collectutility
 import analysisutility
@@ -19,7 +20,7 @@ def collectMain():
 def analysisMain():
 	fullPath = os.path.join(os.getcwd(), 'InputResult')
 	print(f'Input Result Collection XML File Directory : {fullPath}\n')
-	resultFileList = os.listdir(fullPath)
+	resultFileList = glob.glob(f'{fullPath}/*.xml')
 	for resultFile in resultFileList:
 		filePath = os.path.join(fullPath, resultFile)
 		print(f'Collect File : {filePath}')

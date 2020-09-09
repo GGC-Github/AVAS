@@ -4,6 +4,7 @@ import inspect
 import pkgutil
 import operator
 import re
+import collections
 
 # in : 포함되지 않으면 취약
 # not in : 포함되어 있으면 취약
@@ -217,7 +218,7 @@ class PluginCollection(object):
 		self.subType = ''.join(assetSubType)
 		self.code = code
 		self.plugins = []
-		if isinstance(self.code, list):
+		if isinstance(self.code, collections.abc.KeysView):
 			self.loadPackage('plugins')
 		else:
 			self.loadCodeAllPackage('plugins', self.code)
