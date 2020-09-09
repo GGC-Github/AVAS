@@ -218,7 +218,7 @@ class PluginCollection(object):
 		self.subType = ''.join(assetSubType)
 		self.code = code
 		self.plugins = []
-		if isinstance(self.code, collections.abc.KeysView):
+		if isinstance(self.code, collections.abc.KeysView) or isinstance(self.code, list):
 			self.loadPackage('plugins')
 		else:
 			self.loadCodeAllPackage('plugins', self.code)

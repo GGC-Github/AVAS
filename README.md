@@ -1,31 +1,54 @@
 # AVAS
 
-Automated Vulnerability Analysis System
+##### Automated Vulnerability Analysis System
 
 ## 시작하기
 
-취약점 진단 프로세스에서 수집과 분석을 구분하고 최종 보고서 작성까지 자동화하여 받아보실 수 있습니다.
-아래의 지침을 따라 진행하시어 설치해보시기 바라며, 각 항목을 플러그인 형태로 구성하여 많은 코드 분석 필요 없이 간단하게 항목을 추가하실 수 있습니다.
+인프라 진단 시 일일이 비교하여 수행하는 자들이 많아   
+업무의 고충은 날로 늘어 제 능력을 충분히 발휘하지 못 하니   
+이런 까닭으로 능력있는 사람 조차 번번이 실수를 하는 사람이 많다.   
+이를 안타깝게 여겨 새로이 자동화 무른모를 만드니   
+그대들에게 하여금 업무의 효율성을 증대시키고자 할 따름이다.   
 
 ### 시작하기에 앞서
+- 설치 및 실행 테스트 환경
 ```
-
+OS : Windows10, Ubuntu 18.04
+Version : Python 3.8
 ```
-
+- 스크립트 실행 테스트 환경
+```
+Windows Server 2008 R2
+Windows Server 2012
+CentOS 7
+Ubuntu 16.04
+Ubuntu 18.04
+```
 ### 설치하기
+##### Ubuntu
 
-단계별 예제를 통하여 개발 환경을 구축하는 방법을 설명해 주세요.
-
-단계를 먼저 적어주세요
-
-```
-예시도 함께 재공해 주세요
-```
-반복하세요
+- Python 및 git 설치
 
 ```
-끝날때까지 적어주세요
+sudo apt-get install python3.* git
 ```
+- git 저장소에서 Pull
+```
+git clone https://github.com/GGC-Github/AVAS.git
+```
+- 필요한 Python 모듈 설치
+```
+cd AVAS
+python3 -m pip install -r requirements.txt
+```
+
+##### Windows
+- Python 설치(아래 사이트에서 3.8 버전 다운로드 및 설치)
+```
+https://www.python.org/downloads/
+```
+- AVAS Github 에서 Download Zip   
+<img src="https://user-images.githubusercontent.com/62414986/92617619-71032a00-f2fa-11ea-82f8-d58d5b44472d.png" width=90%></img><br />
 
 마무리로 시스템에서 데이터를 추출하는 방법이나 데모를 실행하는 방법을 설명해 주세요.
 

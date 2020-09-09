@@ -83,7 +83,7 @@ def mergeScript(document, plugins, getPwd):
 	LIBPOST = readScript([f'lib_{libName}_postprocess.inc'], LIBDIR)
 
 	NEWSCRIPTFILE = os.path.join(getPwd, f'{assetType.lower()}_{assetSubType.lower()}_{dt}.{FILEEXT}')
-	with open(NEWSCRIPTFILE, 'w', encoding='UTF-8', newline='\n') as newFile:
+	with open(NEWSCRIPTFILE, 'w', encoding='UTF-8', newline=os.linesep) as newFile:
 		newFile.write(FILEHEADER)
 		newFile.write(LIBPRE)
 		newFile.write(ASSETINFO)
