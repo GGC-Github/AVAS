@@ -14,7 +14,8 @@ def collectMain():
 	fullCode = collectutility.codeParser(doc['assetType'], doc['assetSubType'], doc['assetCode'])
 	pluginModules = PluginCollection(doc['assetType'], doc['assetSubType'], fullCode).plugins
 	fileName = collectutility.mergeScript(doc, pluginModules, os.getcwd())
-	print(f'Merge Script Finished! {fileName}\n')
+	print('... Merge Script Finished!')
+	print(f'Script File : {fileName}\n')
 
 
 def analysisMain():
@@ -25,10 +26,11 @@ def analysisMain():
 		filePath = os.path.join(fullPath, resultFile)
 		print(f'Collect File : {filePath}')
 		assetInfo, sysInfo, infoDict, fileDict = analysisutility.xmlResultFileParser(filePath)
-		print('##### Result xml File Parsing Success! #####')
+		print('... Result xml File Parsing Success!')
 		analysisRes = analysisutility.assetDistribution(assetInfo, sysInfo, infoDict, fileDict)
-		excelutility.makeExcelReport(analysisRes, sysInfo)
-		print('##### Final Result Report Successfully Created! #####')
+		excelFile = excelutility.makeExcelReport(analysisRes, sysInfo)
+		print('... Final Result Report Successfully Created!')
+		print(f'Report File : {excelFile}\n')
 
 
 if __name__ == '__main__':

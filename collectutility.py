@@ -10,13 +10,8 @@ def readConfig(confPath):
 	document = yaml.load(open(confPath, 'r', encoding='UTF-8'), Loader=yaml.SafeLoader)
 	doc = document['assetInfo']
 	print(f"""
-***** Current Configuration File Settings *****
-
-TYPE : {doc['assetType']}
-SUBTYPE : {doc['assetSubType']}
-CODE : {doc['assetCode']}
-
-***********************************************
+... Current Configuration File Settings
+TYPE : {doc['assetType']}, SUBTYPE : {doc['assetSubType']}, CODE : {doc['assetCode']}
 	""")
 	return doc
 

@@ -141,3 +141,5 @@ def makeExcelReport(analysisRes, sysList):
     )
 
     wb.save(filename=os.path.join(os.getcwd(), 'ExcelDir', fileName))
+
+    return fileName
