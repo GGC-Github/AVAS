@@ -1,6 +1,4 @@
-# AVAS
-
-##### Automated Vulnerability Analysis System
+# AVAS(Automated Vulnerability Analysis System)
 
 ## 시작하기
 
@@ -34,7 +32,7 @@ Ubuntu 18.04
 - Python 및 git 설치
 
 ```
-sudo apt-get install python3.* git
+sudo apt-get install python3.8 python3-pip python3-distutils git
 ```
 - git 저장소에서 Pull
 ```
@@ -113,7 +111,6 @@ assetInfo:
 >    - 교육 링크 : [KISEC 사이트](https://www.kisec.com/service/edu_sbj_002_det.do?subjectNum=22)
 
 ## 감사 인사
-
 -  이 프로젝트 진행에 많은 도움을 주신 [madwind76](https://github.com/madwind76) 님께 경의를 표합니다.
 
 ---
