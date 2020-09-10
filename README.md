@@ -61,6 +61,7 @@ python -m pip install -r requirements.txt
 ```
 
 ## 사용법
+#### Usage
 ```
 usage: python avas.py [ AVAS MOD ]
 
@@ -73,6 +74,8 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 ```
+#### Demo
+[![asciicast](https://asciinema.org/a/o6k7G6yunupSy2ZVwFOI7eyWt.svg)](https://asciinema.org/a/o6k7G6yunupSy2ZVwFOI7eyWt)
 
 ## 설정파일
 - AVAS.yaml   
