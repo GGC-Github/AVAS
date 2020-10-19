@@ -9,7 +9,7 @@ class windowsosw01(Plugin):
 echo     ^<infoElement code="%CODE001%"^> >> %RESULT_COLLECT_FILE%
 
 net user Administrator | findstr /bic:"Account active" > administrator_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
 	call :base64encode administrator_tmp.txt
 	echo         ^<command name="ADMIN_ACCOUNT"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
 	for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

@@ -21,7 +21,7 @@ echo         ^<osVersion^>%OSVERSION%^</osVersion^> >> %RESULT_COLLECT_FILE%
 echo         ^<hostname^>%HOSTNAME%^</hostname^> >> %RESULT_COLLECT_FILE%
 
 certutil > nul
-if "%ERRORLEVEL%" == "0" (set ENCTYPE=base64) else (set ENCTYPE=NULL)
+if ERRORLEVEL 0 (set ENCTYPE=base64) else (set ENCTYPE=NULL)
 echo         ^<encType^>%ENCTYPE%^</encType^> >> %RESULT_COLLECT_FILE%
 
 ipconfig | more > iplist.txt

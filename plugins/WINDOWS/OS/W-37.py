@@ -9,7 +9,7 @@ class windowsosw37(Plugin):
 echo     ^<infoElement code="%CODE037%"^> >> %RESULT_COLLECT_FILE%
 
 cacls %systemroot%\system32\config\SAM  > samperm_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode samperm_tmp.txt
     echo         ^<command name="SAM_FILE_PERM"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

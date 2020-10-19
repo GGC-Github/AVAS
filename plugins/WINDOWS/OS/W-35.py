@@ -9,7 +9,7 @@ class windowsosw35(Plugin):
 echo     ^<infoElement code="%CODE035%"^> >> %RESULT_COLLECT_FILE%
 
 reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /s /v Start > remote_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode remote_reg_tmp.txt
     echo         ^<command name="REMOTE_REGISTRY_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

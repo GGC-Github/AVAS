@@ -9,7 +9,7 @@ class windowsosw08(Plugin):
 echo     ^<infoElement code="%CODE008%"^> >> %RESULT_COLLECT_FILE%
 
 net share | more > default_share_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode default_share_tmp.txt
     echo         ^<command name="DEFAULT_SHARE"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
@@ -20,7 +20,7 @@ if exist default_share_tmp.txt (
 )
 
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters" /s /v AutoShareServer > autoshare_server_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode autoshare_server_reg_tmp.txt
     echo         ^<command name="AUTOSHARE_SERVER_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

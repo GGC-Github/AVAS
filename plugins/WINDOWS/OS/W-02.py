@@ -9,7 +9,7 @@ class windowsosw02(Plugin):
 echo     ^<infoElement code="%CODE002%"^> >> %RESULT_COLLECT_FILE%
 
 net user guest | findstr /bic:"Account active" > guest_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode guest_tmp.txt
     echo         ^<command name="GUEST_ACCOUNT"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

@@ -1,4 +1,4 @@
-set local
+setlocal
 chcp 437>nul
 PUSHD %~DP0
 
@@ -14,7 +14,7 @@ set RESULT_COLLECT_FILE=result_collect_%HOSTNAME%_%DATETEXT%%TIMETEXT%.xml
 set RESULT_FILE_DATA_FILE=result_file_data_%HOSTNAME%_%DATETEXT%%TIMETEXT%.xml
 
 net session>nul 2>&1
-if not "%ERRORLEVEL%" == "0" (
+if not ERRORLEVEL 0 (
 	echo.
 	echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	echo.
