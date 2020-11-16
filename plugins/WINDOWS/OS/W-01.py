@@ -24,7 +24,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 secedit /export /cfg secpolicy_tmp.txt > nul
 type secpolicy_tmp.txt | more > secpolicy.txt
 del /q secpolicy_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
 	call :fileCheckSum secpolicy.txt, checksumvalue
 	if not "%checksumvalue%" == "DUP" (
 		echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%

@@ -55,24 +55,3 @@ def xmlResultFileParser(resultFile):
 		                                  data in fileElement if data.tag != 'filePath'}})
 
 	return assetInfo, sysInfo, infoCollectDict, fileCollectDict
-
-
-def mergeExeclData(setString):
-	fullString = ''
-	data = ''
-	for key, value in setString.items():
-		if '_PS' in key:
-			data = f'[ {key.split("_")[0]} 프로세스 상태 ]\n'
-		elif '_PORT' in key:
-			data = f'[ {key.split("_")[0]} 포트 상태 ]\n'
-		elif '_SYS' in key:
-			data = f'[ {key.split("_")[0]} 서비스 데몬 상태 ]\n'
-		elif 'FILEPERM:' in key:
-			data = f'파일명 : {key.split("FILEPERM:")[1]}\n'
-		elif 'FILEDATA:' in key:
-			data = f'파일명 : {key.split("FILEDATA:")[1]}\n'
-		elif 'CMD:' in key:
-			data = f'[ {key.split("CMD:")[1]} ]\n\n'
-		data += f'{value}\n'
-		fullString += data
-	return fullString

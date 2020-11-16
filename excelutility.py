@@ -3,12 +3,34 @@ import io
 import os
 from openpyxl import load_workbook
 import excelstyle
-import analysisutility as utility
 import datetime
 
 
-def makeExcelReport(analysisRes, sysList):
+def mergeExeclData(setString):
+    fullString = ''
+    data = ''
+    for key, value in setString.items():
+        if '_PS' in key:
+            data = f'[ {key.split("_")[0]} 프로세스 상태 ]\n'
+        elif '_PORT' in key:
+            data = f'[ {key.split("_")[0]} 포트 상태 ]\n'
+        elif '_SYS' in key:
+            data = f'[ {key.split("_")[0]} 서비스 데몬 상태 ]\n'
+        elif 'FILEPERM:' in key:
+            data = f'파일명 : {key.split("FILEPERM:")[1]}\n'
+        elif 'FILEDATA:' in key:
+            data = f'파일명 : {key.split("FILEDATA:")[1]}\n'
+        elif 'CMD:' in key:
+            data = f'[ {key.split("CMD:")[1]} ]\n\n'
+        data += f'{value}\n'
+        fullString += data
+    return fullString
+
+
+def makeExcelReport(analysisRes, sysList, assetInfo):
     dt = datetime.datetime.now()
+    assetType = assetInfo['assetType'].lower()
+    assetSubType = assetInfo['assetSubType'].lower()
 
     wb = load_workbook(io.BytesIO(excelstyle.defaultexcel))
     wsResSum = wb['진단 결과 요약']
@@ -96,7 +118,7 @@ def makeExcelReport(analysisRes, sysList):
                     wsResDetVer.cell(row=rownum, column=2 + colcnt).font = excelstyle.normalfont
 
                 if idx == 7 and colcnt == 1:
-                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = utility.mergeExeclData(inputdata[idx][colcnt])
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = mergeExeclData(inputdata[idx][colcnt])
                 else:
                     wsResDetVer.cell(row=rownum, column=2 + colcnt).value = inputdata[idx][colcnt]
 
@@ -113,7 +135,7 @@ def makeExcelReport(analysisRes, sysList):
             wsResDetHor.cell(row=5 + cnt, column=2 + idx).border = excelstyle.thinborder
             wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.normalfont
             if idx == 6:
-                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = utility.mergeExeclData(inputdata[idx])
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = mergeExeclData(inputdata[idx])
             else:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = inputdata[idx]
             if idx < 2:
@@ -136,9 +158,7 @@ def makeExcelReport(analysisRes, sysList):
             wsResRefInfo[val].font = excelstyle.normalfont
             wsResRefInfo[val].alignment = excelstyle.leftwrapalign
 
-    fileName = ''.join("result_report_{}_{}_{}.xlsx".format(
-        sysList['osName'], sysList['hostname'], dt.strftime("%Y%m%d%H%M%S"))
-    )
+    fileName = f'report_{sysList["osType"]}_{assetType}_{assetSubType}_{sysList["hostname"]}_{dt.strftime("%Y%m%d%H%M%S")}.xlsx'
 
     wb.save(filename=os.path.join(os.getcwd(), 'ExcelDir', fileName))
 

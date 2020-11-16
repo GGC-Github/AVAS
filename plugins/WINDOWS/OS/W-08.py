@@ -31,7 +31,7 @@ if exist autoshare_server_reg_tmp.txt (
 )
 
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters" /s /v AutoShareWks > autoshare_wks_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+if ERRORLEVEL 0 (
     call :base64encode autoshare_wks_reg_tmp.txt
     echo         ^<command name="AUTOSHARE_WKS_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%

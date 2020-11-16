@@ -32,7 +32,7 @@ linux008() {
 		if '/etc/shadow' in fileDict.keys():
 			reBool = self.filePermCheck(fileDict, '/etc/shadow', '400', 'root', '<=')
 		else:
-			self.stat.update({'FILEPERM:/etc/shadow': '- Not Found /etc/passwd File\n'})
+			self.stat.update({'FILEPERM:/etc/shadow': '- Not Found /etc/shadow File\n'})
 
 		if not reBool:
 			self.fullString[1] = '취약'

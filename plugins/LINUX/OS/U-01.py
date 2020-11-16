@@ -1,5 +1,4 @@
 from plugins import Plugin
-import analysisutility as util
 
 
 class linuxosu01(Plugin):
@@ -48,6 +47,9 @@ linux001() {
 					if chkFlag:
 						if self.getConfig(dictKey, '^[\t ]*PermitRootLogin\\s\\S+$', 'PermitRootLogin', 'exist'):
 							vulCnt += self.compStrValue(dictKey, '^[\t ]*PermitRootLogin\\s(\\S+)$', 'no', '==')
+						else:
+							self.stat.update({dictKey: self.stat[dictKey].replace('(!)\n', '\n')})
+							vulCnt += 1
 				else:
 					for file in chkServiceDict[service][2]:
 						chkFlag, dictKey = self.getFileName(infoDict, fileDict, file)

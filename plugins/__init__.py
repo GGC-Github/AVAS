@@ -135,11 +135,16 @@ class Plugin(metaclass=ABCMeta):
 		reg = re.findall(com, self.stat[key])
 		if reg:
 			cmpOper = OPS[compType]
-			if cmpOper(compValue, reg[0]):
-				reCnt += 1
+			if compType == 'in':
+				if cmpOper(reg[0], compValue):
+					reCnt += 1
+				else:
+					self.stat.update({key: self.stat[key].replace('\n', '(!)\n')})
 			else:
-				self.stat.update({key: self.stat[key].replace('\n', '(!)\n')})
-
+				if cmpOper(compValue, reg[0]):
+					reCnt += 1
+				else:
+					self.stat.update({key: self.stat[key].replace('\n', '(!)\n')})
 		return reCnt
 
 	def compNumValue(self, key, pattern, compValue, compType):
@@ -169,10 +174,14 @@ class Plugin(metaclass=ABCMeta):
 							reBool = False
 				else:
 					cmpOper = OPS[compType]
-					if cmpOper(compValue, reg[0]):
-						data += '(!)'
-						reBool = False
-
+					if compType == 'in':
+						if cmpOper(reg[0], compValue):
+							data += '(!)'
+							reBool = False
+					else:
+						if cmpOper(compValue, reg[0]):
+							data += '(!)'
+							reBool = False
 			reStr += f'{data}\n'
 		if reBool:
 			reCnt = 1

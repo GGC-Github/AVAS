@@ -28,7 +28,7 @@ def analysisMain():
 		assetInfo, sysInfo, infoDict, fileDict = analysisutility.xmlResultFileParser(filePath)
 		print('... Result xml File Parsing Success!')
 		analysisRes = analysisutility.assetDistribution(assetInfo, sysInfo, infoDict, fileDict)
-		excelFile = excelutility.makeExcelReport(analysisRes, sysInfo)
+		excelFile = excelutility.makeExcelReport(analysisRes, sysInfo, assetInfo)
 		print('... Final Result Report Successfully Created!')
 		print(f'Report File : {excelFile}\n')
 
