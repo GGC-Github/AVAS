@@ -158,7 +158,7 @@ def makeExcelReport(analysisRes, sysList, assetInfo):
             wsResRefInfo[val].font = excelstyle.normalfont
             wsResRefInfo[val].alignment = excelstyle.leftwrapalign
 
-    fileName = f'report_{sysList["osType"]}_{assetType}_{assetSubType}_{sysList["hostname"]}_{dt.strftime("%Y%m%d%H%M%S")}.xlsx'
+    fileName = f'report_{assetType}_{assetSubType}_{sysList["hostname"]}_{dt.strftime("%Y%m%d%H%M%S")}.xlsx'
 
     wb.save(filename=os.path.join(os.getcwd(), 'ExcelDir', fileName))
 

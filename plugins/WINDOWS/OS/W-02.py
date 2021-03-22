@@ -9,23 +9,21 @@ class windowsosw02(Plugin):
 echo     ^<infoElement code="%CODE002%"^> >> %RESULT_COLLECT_FILE%
 
 net user guest | findstr /bic:"Account active" > guest_tmp.txt
-if ERRORLEVEL 0 (
+if "%ERRORLEVEL%" == "0" (
     call :base64encode guest_tmp.txt
     echo         ^<command name="GUEST_ACCOUNT"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
     echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
 )
-if exist guest_tmp.txt (
-    del /q guest_tmp.txt
-)
+if exist guest_tmp.txt del /q guest_tmp.txt
 
 echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 secedit /export /cfg secpolicy_tmp.txt > nul
 type secpolicy_tmp.txt | more > secpolicy.txt
 del /q secpolicy_tmp.txt
-if ERRORLEVEL 0 (
-    call :fileCheckSum secpolicy.txt, checksumvalue
+if "%ERRORLEVEL%" == "0" (
+call :fileCheckSum secpolicy.txt, checksumvalue
     if not "%checksumvalue%" == "DUP" (
         echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
         echo             ^<filePath checksum="%checksumvalue%"^>^<!^[CDATA^[Local Security Policy^]^]^>^</filePath^> >> %RESULT_FILE_DATA_FILE%
@@ -36,9 +34,7 @@ if ERRORLEVEL 0 (
         echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
     )
 )
-if exist secpolicy.txt (
-    del /q secpolicy.txt
-)
+if exist secpolicy.txt del /q secpolicy.txt
 
 echo %CODE002% Collect
 		"""

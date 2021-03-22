@@ -9,26 +9,22 @@ class windowsosw32(Plugin):
 echo     ^<infoElement code="%CODE032%"^> >> %RESULT_COLLECT_FILE%
 
 wmic qfe list brief /format:texttablewsys | more > hotfix_tmp.txt
-if ERRORLEVEL 0 (
+if "%ERRORLEVEL%" == "0" (
     call :base64encode hotfix_tmp.txt
     echo         ^<command name="WINDOWS_HOTFIX"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
     echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
 )
-if exist hotfix_tmp.txt (
-    del /q hotfix_tmp.txt
-)
+if exist hotfix_tmp.txt del /q hotfix_tmp.txt
 
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" > updatereg_tmp.txt
-if ERRORLEVEL 0 (
+if "%ERRORLEVEL%" == "0" (
     call :base64encode updatereg_tmp.txt
     echo         ^<command name="WINDOWS_UPDATE_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
     for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
     echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
 )
-if exist updatereg_tmp.txt (
-    del /q updatereg_tmp.txt
-)
+if exist updatereg_tmp.txt del /q updatereg_tmp.txt
 
 echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 

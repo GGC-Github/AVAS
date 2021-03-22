@@ -54,8 +54,8 @@ def mergeScript(document, plugins, getPwd):
 	assetSubType = document['assetSubType'][0]
 
 	libList = {
-		'batch': ['@echo off\n', 'bat', f'set ASSETTYPE={assetType}', f'set ASSETSUBTYPE={assetSubType}'],
-		'shell': ['#!/bin/sh\n', 'sh', f'ASSETTYPE="{assetType}"', f'ASSETSUBTYPE="{assetSubType}"']
+		'batch': ['@echo off\n', 'bat', f'set ASSETTYPE={assetType}', f'set ASSETSUBTYPE={assetSubType}', '\r\n'],
+		'shell': ['#!/bin/sh\n', 'sh', f'ASSETTYPE="{assetType}"', f'ASSETSUBTYPE="{assetSubType}"', '\n']
 	}
 	libName = 'batch' if assetType.lower() == 'windows' else 'shell'
 	FILEHEADER = libList[libName][0]
@@ -78,7 +78,7 @@ def mergeScript(document, plugins, getPwd):
 	LIBPOST = readScript([f'lib_{libName}_postprocess.inc'], LIBDIR)
 
 	NEWSCRIPTFILE = os.path.join(getPwd, f'{assetType.lower()}_{assetSubType.lower()}_{dt}.{FILEEXT}')
-	with open(NEWSCRIPTFILE, 'w', encoding='UTF-8', newline='\n') as newFile:
+	with open(NEWSCRIPTFILE, 'w', encoding='UTF-8', newline=libList[libName][4]) as newFile:
 		newFile.write(FILEHEADER)
 		newFile.write(LIBPRE)
 		newFile.write(ASSETINFO)

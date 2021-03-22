@@ -31,7 +31,7 @@ exit /b
     set chksumvalue=%chksumvalue: =%
     if exist filecksum.txt (
         type filecksum.txt | findstr /bic:%chksumvalue% > nul
-        if ERRORLEVEL 0 (
+        if "%ERRORLEVEL%" == "0" (
             set %~2=DUP
         ) else (
             echo %chksumvalue% >> filecksum.txt

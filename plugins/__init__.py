@@ -235,8 +235,8 @@ class PluginCollection(object):
 	def loadPackage(self, package):
 		imported = import_module(f'{package}.{self.type}.{self.subType}')
 		for _, name, ispkg in pkgutil.iter_modules(imported.__path__, imported.__name__ + '.'):
-			pluginModule = import_module(name)
-			clsmembers = inspect.getmembers(pluginModule, inspect.isclass)
+			plugModule = import_module(name)
+			clsmembers = inspect.getmembers(plugModule, inspect.isclass)
 			for _, memClass in clsmembers:
 				if issubclass(memClass, Plugin) & (memClass is not Plugin):
 					module = memClass()

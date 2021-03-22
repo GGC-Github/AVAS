@@ -13,7 +13,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 secedit /export /cfg secpolicy_tmp.txt > nul
 type secpolicy_tmp.txt | more > secpolicy.txt
 del /q secpolicy_tmp.txt
-if ERRORLEVEL 0 (
+if "%ERRORLEVEL%" == "0" (
     call :fileCheckSum secpolicy.txt, checksumvalue
     if not "%checksumvalue%" == "DUP" (
         echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
@@ -25,11 +25,9 @@ if ERRORLEVEL 0 (
         echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
     )
 )
-if exist secpolicy.txt (
-    del /q secpolicy.txt
-)
+if exist secpolicy.txt del /q secpolicy.txt
 
-echo %CODE040% Collect	
+echo %CODE040% Collect
 		"""
 		self.codeExcute = "set CODE040=W-40"
 		self.description = {

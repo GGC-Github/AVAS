@@ -13,17 +13,17 @@ for /f "tokens=*" %%a in ('hostname') do set HOSTNAME=%%a
 set RESULT_COLLECT_FILE=result_collect_%HOSTNAME%_%DATETEXT%%TIMETEXT%.xml
 set RESULT_FILE_DATA_FILE=result_file_data_%HOSTNAME%_%DATETEXT%%TIMETEXT%.xml
 
-net session>nul 2>&1
-if not ERRORLEVEL 0 (
-	echo.
-	echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	echo.
-	echo This script must be run as admin.
-	echo.
-	echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	echo.
-	pause>nul
-	exit
-)
+net session > nul 2>&1
+if "%ERRORLEVEL%" == "0" goto NEXT
+echo.
+echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+echo.
+echo This script must be run as admin.
+echo.
+echo =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+echo.
+pause>nul
+exit
+:NEXT
 
 set checksumvalue=DUP
