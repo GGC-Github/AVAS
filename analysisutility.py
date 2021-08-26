@@ -31,8 +31,7 @@ def xmlResultFileParser(resultFile):
 	decodelist = ['ipList', 'processInfo', 'portInfo', 'serviceInfo']
 
 	assetInfo = {data.tag: data.text for data in root.find("assetInfo")}
-	sysInfo = {info.tag: base64Decode(info.text) if info.tag in decodelist else info.text for info in
-	           root.find("sysInfo")}
+	sysInfo = {info.tag: base64Decode(info.text) if info.tag in decodelist else info.text for info in root.find("sysInfo")}
 
 	infoCollectDict = {}
 	fileCollectDict = {}
