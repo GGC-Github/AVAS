@@ -24,9 +24,9 @@ linux003() {
 			'Name': '계정 잠금 임계값 설정',
 			'Important': '상',
 			'ImportantScore': '3',
-			'Criterion': '양호 : 계정 잠금 임계값이 5 이하의 값으로 설정되어 있는 경우\n'
-			'취약 : 계정 잠금 임계값이 설정되어 있지 않거나, 5 이하의 값으로 설정되지 않은 경우',
-			'ActionPlan': '계정 잠금 임계값을 5 이하로 설정'
+			'Criterion': '양호 : 계정 잠금 임계값이 10 이하의 값으로 설정되어 있는 경우\n'
+			'취약 : 계정 잠금 임계값이 설정되어 있지 않거나, 10 이하의 값으로 설정되지 않은 경우',
+			'ActionPlan': '계정 잠금 임계값을 10 이하로 설정'
 		}
 		self.fullString = [self.code, '양호', self.stat, self.description]
 
@@ -41,7 +41,7 @@ linux003() {
 				if self.getConfig(dictKey,
 				                  '^auth\\s+(?:required|requisite)\\s+\\S*(?:pam_tally|pam_tally2|pam_faillock)\\.so.*$',
 				                  'deny', 'exist'):
-					vulCnt += self.compNumValue(dictKey, 'deny=([0-9]+)', 5, '<')
+					vulCnt += self.compNumValue(dictKey, 'deny=([0-9]+)', 10, '<')
 			else:
 				notfoundCnt += 1
 

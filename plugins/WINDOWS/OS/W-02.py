@@ -41,7 +41,7 @@ echo %CODE002% Collect
 		self.codeExecute = "set CODE002=W-02"
 		self.description = {
 			'Category': '계정 관리',
-			'Name': 'Guset 계정 상태',
+			'Name': 'Guset 계정 비활성화',
 			'Important': '상',
 			'ImportantScore': '3',
 			'Criterion': '양호 : Guest 계정이 비활성화 되어 있는 경우\n'

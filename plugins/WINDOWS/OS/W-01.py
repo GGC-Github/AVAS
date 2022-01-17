@@ -41,12 +41,12 @@ echo %CODE001% Collect
 		self.codeExecute = "set CODE001=W-01"
 		self.description = {
 			'Category': '계정 관리',
-			'Name': 'Administrator 계정 이름 바꾸기',
+			'Name': 'Administrator 계정 이름 변경 및 보안성 강화',
 			'Important': '상',
 			'ImportantScore': '3',
-			'Criterion': '양호 : Administrator Default 계정 이름을 변경한 경우\n'
-			'취약 : Administrator Default 계정 이름을 변경하지 않은 경우',
-			'ActionPlan': 'Administrator Default 계정 이름 변경'
+			'Criterion': '양호 : Administrator Default 계정 이름을 변경하거나, 강화된 비밀번호를 적용한 경우\n'
+			'취약 : Administrator Default 계정 이름을 변경하지 않거나 단순 비밀번호를 적용한 경우',
+			'ActionPlan': 'Administrator Default 계정 이름 변경 및 보안성이 있는 비밀번호 설정'
 		}
 		self.fullString = [self.code, '양호', self.stat, self.description]
 
