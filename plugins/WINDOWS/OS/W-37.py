@@ -6,20 +6,13 @@ class windowsosw37(Plugin):
 		super().__init__()
 		self.code = "W-37"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE037%"^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE037%
 
 cacls %systemroot%\system32\config\SAM  > samperm_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode samperm_tmp.txt
-    echo         ^<command name="SAM_FILE_PERM"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write samperm_tmp.txt, SAM_FILE_PERM
 if exist samperm_tmp.txt del /q samperm_tmp.txt
 
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
-
-echo %CODE037% Collect
+call :xml_infoElement_tag_end %CODE037%
 		"""
 		self.codeExecute = "set CODE037=W-37"
 		self.description = {

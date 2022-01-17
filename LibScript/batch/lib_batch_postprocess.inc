@@ -18,6 +18,17 @@ del /q "filecksum.txt"
 del /q "%RESULT_FILE_DATA_FILE%"
 
 exit /b 0
+:xml_infoElement_tag_start
+    set code=%~1
+    echo     ^<infoElement code="%code%"^> >> %RESULT_COLLECT_FILE%
+exit /b
+
+:xml_infoElement_tag_end
+    set code=%~1
+    echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
+    echo %code% Collect
+exit /b
+
 :base64encode
 	certutil -encode %~1 base64tmp.txt > nul
 	type base64tmp.txt | findstr /v CERTIFICATE > base64.txt
@@ -42,4 +53,21 @@ exit /b
         set %~2=%chksumvalue%
     )
     del /q filecksumtmp.txt
+exit /b
+
+:xml_fileInfo_write
+    echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
+    echo             ^<filePath checksum="%~2"^>^<!^[CDATA^[Local Security Policy^]^]^>^</filePath^> >> %RESULT_FILE_DATA_FILE%
+    call :base64encode %~1
+    echo             ^<fileData^>^<!^[CDATA^[ >> %RESULT_FILE_DATA_FILE%
+    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_FILE_DATA_FILE%
+    echo             ^]^]^>^</fileData^> >> %RESULT_FILE_DATA_FILE%
+    echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
+exit /b
+
+:xml_command_write
+    call :base64encode %~1
+    echo         ^<command name="%~2"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
+    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
+    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
 exit /b

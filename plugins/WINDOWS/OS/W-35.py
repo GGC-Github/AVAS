@@ -6,21 +6,14 @@ class windowsosw35(Plugin):
 		super().__init__()
 		self.code = "W-35"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE035%"^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE035%
 
 reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /s /v Start > remote_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode remote_reg_tmp.txt
-    echo         ^<command name="REMOTE_REGISTRY_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write remote_reg_tmp.txt, REMOTE_REGISTRY_REG
 if exist remote_reg_tmp.txt del /q remote_reg_tmp.txt
 
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
-
-echo %CODE035% Collect	
-		"""
+call :xml_infoElement_tag_end %CODE035%
+"""
 		self.codeExecute = "set CODE035=W-35"
 		self.description = {
 			'Category': '로그 관리',

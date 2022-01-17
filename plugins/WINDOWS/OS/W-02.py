@@ -6,38 +6,25 @@ class windowsosw02(Plugin):
 		super().__init__()
 		self.code = "W-02"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE002%"^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE002%
 
 net user guest | findstr /bic:"Account active" > guest_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode guest_tmp.txt
-    echo         ^<command name="GUEST_ACCOUNT"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write guest_tmp.txt, GUEST_ACCOUNT
 if exist guest_tmp.txt del /q guest_tmp.txt
-
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 secedit /export /cfg secpolicy_tmp.txt > nul
 type secpolicy_tmp.txt | more > secpolicy.txt
 del /q secpolicy_tmp.txt
-if "%ERRORLEVEL%" == "0" (
+
 call :fileCheckSum secpolicy.txt, checksumvalue
-    if not "%checksumvalue%" == "DUP" (
-        echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
-        echo             ^<filePath checksum="%checksumvalue%"^>^<!^[CDATA^[Local Security Policy^]^]^>^</filePath^> >> %RESULT_FILE_DATA_FILE%
-        call :base64encode secpolicy.txt
-        echo             ^<fileData^>^<!^[CDATA^[ >> %RESULT_FILE_DATA_FILE%
-        for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_FILE_DATA_FILE%
-        echo             ^]^]^>^</fileData^> >> %RESULT_FILE_DATA_FILE%
-        echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
-    )
-)
+if "%checksumvalue%" == "DUP" goto END002
+call :xml_fileInfo_write secpolicy.txt, %checksumvalue%
+
+:END002
 if exist secpolicy.txt del /q secpolicy.txt
 
-echo %CODE002% Collect
-		"""
+call :xml_infoElement_tag_end %CODE002%
+"""
 		self.codeExecute = "set CODE002=W-02"
 		self.description = {
 			'Category': '계정 관리',

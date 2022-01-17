@@ -6,29 +6,21 @@ class windowsosw40(Plugin):
 		super().__init__()
 		self.code = "W-40"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE040%"^> >> %RESULT_COLLECT_FILE%
-
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE040%
 
 secedit /export /cfg secpolicy_tmp.txt > nul
 type secpolicy_tmp.txt | more > secpolicy.txt
 del /q secpolicy_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :fileCheckSum secpolicy.txt, checksumvalue
-    if not "%checksumvalue%" == "DUP" (
-        echo         ^<fileInfo^> >> %RESULT_FILE_DATA_FILE%
-        echo             ^<filePath checksum="%checksumvalue%"^>^<!^[CDATA^[Local Security Policy^]^]^>^</filePath^> >> %RESULT_FILE_DATA_FILE%
-        call :base64encode secpolicy.txt
-        echo             ^<fileData^>^<!^[CDATA^[ >> %RESULT_FILE_DATA_FILE%
-        for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_FILE_DATA_FILE%
-        echo             ^]^]^>^</fileData^> >> %RESULT_FILE_DATA_FILE%
-        echo         ^</fileInfo^> >> %RESULT_FILE_DATA_FILE%
-    )
-)
+
+call :fileCheckSum secpolicy.txt, checksumvalue
+if "%checksumvalue%" == "DUP" goto END040
+call :xml_fileInfo_write secpolicy.txt, %checksumvalue%
+
+:END040
 if exist secpolicy.txt del /q secpolicy.txt
 
-echo %CODE040% Collect
-		"""
+call :xml_infoElement_tag_end %CODE040%
+"""
 		self.codeExecute = "set CODE040=W-40"
 		self.description = {
 			'Category': '보안 관리',

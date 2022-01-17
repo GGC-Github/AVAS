@@ -6,39 +6,22 @@ class windowsosw08(Plugin):
 		super().__init__()
 		self.code = "W-08"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE008%"^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE008%
 
 net share | more > default_share_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode default_share_tmp.txt
-    echo         ^<command name="DEFAULT_SHARE"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write default_share_tmp.txt, DEFAULT_SHARE
 if exist default_share_tmp.txt del /q default_share_tmp.txt
 
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters" /s /v AutoShareServer > autoshare_server_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode autoshare_server_reg_tmp.txt
-    echo         ^<command name="AUTOSHARE_SERVER_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write autoshare_server_reg_tmp.txt, AUTOSHARE_SERVER_REG
 if exist autoshare_server_reg_tmp.txt del /q autoshare_server_reg_tmp.txt
 
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters" /s /v AutoShareWks > autoshare_wks_reg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode autoshare_wks_reg_tmp.txt
-    echo         ^<command name="AUTOSHARE_WKS_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write autoshare_wks_reg_tmp.txt, AUTOSHARE_WKS_REG
 if exist autoshare_wks_reg_tmp.txt del /q autoshare_wks_reg_tmp.txt
 
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
-
-echo %CODE008% Collect
-		"""
+call :xml_infoElement_tag_end %CODE008%
+"""
 		self.codeExecute = "set CODE008=W-08"
 		self.description = {
 			'Category': '서비스 관리',

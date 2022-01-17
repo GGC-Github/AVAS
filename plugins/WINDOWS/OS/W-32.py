@@ -6,30 +6,18 @@ class windowsosw32(Plugin):
 		super().__init__()
 		self.code = "W-32"
 		self.codeScript = """
-echo     ^<infoElement code="%CODE032%"^> >> %RESULT_COLLECT_FILE%
+call :xml_infoElement_tag_start %CODE032%
 
 wmic qfe list brief /format:texttablewsys | more > hotfix_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode hotfix_tmp.txt
-    echo         ^<command name="WINDOWS_HOTFIX"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write hotfix_tmp.txt, WINDOWS_HOTFIX
 if exist hotfix_tmp.txt del /q hotfix_tmp.txt
 
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" > updatereg_tmp.txt
-if "%ERRORLEVEL%" == "0" (
-    call :base64encode updatereg_tmp.txt
-    echo         ^<command name="WINDOWS_UPDATE_REG"^>^<!^[CDATA^[ >> %RESULT_COLLECT_FILE%
-    for /f "delims=" %%a in (base64.txt) do echo %%a >> %RESULT_COLLECT_FILE%
-    echo         ^]^]^>^</command^> >> %RESULT_COLLECT_FILE%
-)
+if "%ERRORLEVEL%" == "0" call :xml_command_write updatereg_tmp.txt, WINDOWS_UPDATE_REG
 if exist updatereg_tmp.txt del /q updatereg_tmp.txt
 
-echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
-
-echo %CODE032% Collect
-		"""
+call :xml_infoElement_tag_end %CODE032%
+"""
 		self.codeExecute = "set CODE032=W-32"
 		self.description = {
 			'Category': '패치 관리',
