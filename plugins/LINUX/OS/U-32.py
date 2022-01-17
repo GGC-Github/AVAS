@@ -16,7 +16,7 @@ linux032() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux032 U-32"
+		self.codeExecute = "linux032 U-32"
 		self.description = {
 			'Category': '서비스 관리',
 			'Name': '일반사용자의 Sendmail 실행 방지',

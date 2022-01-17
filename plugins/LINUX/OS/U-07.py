@@ -15,7 +15,7 @@ linux007() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux007 U-07"
+		self.codeExecute = "linux007 U-07"
 		self.description = {
 			'Category': '파일 및 디렉터리 관리',
 			'Name': '/etc/passwd 파일 소유자 및 권한 설정',

@@ -38,7 +38,7 @@ if exist secpolicy.txt del /q secpolicy.txt
 
 echo %CODE001% Collect
 		"""
-		self.codeExcute = "set CODE001=W-01"
+		self.codeExecute = "set CODE001=W-01"
 		self.description = {
 			'Category': '계정 관리',
 			'Name': 'Administrator 계정 이름 바꾸기',

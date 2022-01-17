@@ -21,7 +21,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 echo %CODE035% Collect	
 		"""
-		self.codeExcute = "set CODE035=W-35"
+		self.codeExecute = "set CODE035=W-35"
 		self.description = {
 			'Category': '로그 관리',
 			'Name': '원격으로 엑세스 할 수 있는 레지스트리 경로',

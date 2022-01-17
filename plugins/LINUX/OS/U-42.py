@@ -18,7 +18,7 @@ linux042() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux042 U-42"
+		self.codeExecute = "linux042 U-42"
 		self.description = {
 			'Category': '패치 관리',
 			'Name': '최신 보안패치 및 벤더 권고사항 적용',

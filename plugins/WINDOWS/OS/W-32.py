@@ -30,7 +30,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 echo %CODE032% Collect
 		"""
-		self.codeExcute = "set CODE032=W-32"
+		self.codeExecute = "set CODE032=W-32"
 		self.description = {
 			'Category': '패치 관리',
 			'Name': '최신 HOT FIX 적용',

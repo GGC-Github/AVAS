@@ -13,7 +13,7 @@ linux043() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux031 U-43"
+		self.codeExecute = "linux043 U-43"
 		self.description = {
 			'Category': '로그 관리',
 			'Name': '로그의 정기적 검토 및 보고',

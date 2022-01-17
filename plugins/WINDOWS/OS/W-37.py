@@ -21,7 +21,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 echo %CODE037% Collect
 		"""
-		self.codeExcute = "set CODE037=W-37"
+		self.codeExecute = "set CODE037=W-37"
 		self.description = {
 			'Category': '보안 관리',
 			'Name': 'SAM 파일 접근 통제 설정',

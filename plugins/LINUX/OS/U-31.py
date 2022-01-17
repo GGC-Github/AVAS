@@ -16,7 +16,7 @@ linux031() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux031 U-31"
+		self.codeExecute = "linux031 U-31"
 		self.description = {
 			'Category': '서비스 관리',
 			'Name': '스팸 메일 릴레이 제한',

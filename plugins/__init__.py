@@ -33,7 +33,7 @@ class Plugin(metaclass=ABCMeta):
 	def __init__(self):
 		self.code = None
 		self.codeScript = None
-		self.codeExcute = None
+		self.codeExecute = None
 		self.description = {}
 		self.stat = {}
 
@@ -43,8 +43,8 @@ class Plugin(metaclass=ABCMeta):
 	def getScript(self):
 		return self.codeScript
 
-	def getScriptExcute(self):
-		return self.codeExcute
+	def getScriptExecute(self):
+		return self.codeExecute
 
 	def getDescription(self):
 		return self.description

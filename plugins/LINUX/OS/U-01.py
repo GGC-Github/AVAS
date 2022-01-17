@@ -18,7 +18,7 @@ linux001() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux001 U-01"
+		self.codeExecute = "linux001 U-01"
 		self.description = {
 			'Category': '계정 관리',
 			'Name': 'root 계정 원격 접속 제한',
@@ -32,7 +32,7 @@ linux001() {
 
 	def analysisFunc(self, sysInfo, infoDict, fileDict):
 		chkServiceDict = {
-			'ssh': [':22', ['ssh.service, sshd.service'], 'sshd_config'],
+			'ssh': [':22', ['ssh.service', 'sshd.service'], 'sshd_config'],
 			'telnet': [':23', ['telnet.service', 'telnetd.service'], ['/etc/pam.d/remote', '/etc/pam.d/login'], '/etc/securetty']
 		}
 		vulCnt = 0

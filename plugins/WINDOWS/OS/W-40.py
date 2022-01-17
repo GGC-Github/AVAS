@@ -29,7 +29,7 @@ if exist secpolicy.txt del /q secpolicy.txt
 
 echo %CODE040% Collect
 		"""
-		self.codeExcute = "set CODE040=W-40"
+		self.codeExecute = "set CODE040=W-40"
 		self.description = {
 			'Category': '보안 관리',
 			'Name': '원격 시스템에서 강제로 시스템 종료',

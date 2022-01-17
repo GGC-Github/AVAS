@@ -39,7 +39,7 @@ echo     ^</infoElement^> >> %RESULT_COLLECT_FILE%
 
 echo %CODE008% Collect
 		"""
-		self.codeExcute = "set CODE008=W-08"
+		self.codeExecute = "set CODE008=W-08"
 		self.description = {
 			'Category': '서비스 관리',
 			'Name': '하드디스크 기본 공유 제거',

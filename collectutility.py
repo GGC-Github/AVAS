@@ -68,7 +68,7 @@ def mergeScript(document, plugins, getPwd):
 	LIBAUTO = readScript([f'lib_{libName}_autostruct.inc'], LIBDIR)
 
 	code_script = [data.getScript() for data in plugins]
-	code_funcList = [data.getScriptExcute() for data in plugins]
+	code_funcList = [data.getScriptExecute() for data in plugins]
 	if libName == 'batch':
 		SCRIPTMID = LIBAUTO + '\n'.join(code_funcList) + '\n'.join(code_script)
 	else:

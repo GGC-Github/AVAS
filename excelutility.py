@@ -6,7 +6,7 @@ import excelstyle
 import datetime
 
 
-def mergeExeclData(setString):
+def mergeExcelData(setString):
     fullString = ''
     data = ''
     for key, value in setString.items():
@@ -118,7 +118,7 @@ def makeExcelReport(analysisRes, sysList, assetInfo):
                     wsResDetVer.cell(row=rownum, column=2 + colcnt).font = excelstyle.normalfont
 
                 if idx == 7 and colcnt == 1:
-                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = mergeExeclData(inputdata[idx][colcnt])
+                    wsResDetVer.cell(row=rownum, column=2 + colcnt).value = mergeExcelData(inputdata[idx][colcnt])
                 else:
                     wsResDetVer.cell(row=rownum, column=2 + colcnt).value = inputdata[idx][colcnt]
 
@@ -135,10 +135,10 @@ def makeExcelReport(analysisRes, sysList, assetInfo):
             wsResDetHor.cell(row=5 + cnt, column=2 + idx).border = excelstyle.thinborder
             wsResDetHor.cell(row=5 + cnt, column=2 + idx).font = excelstyle.normalfont
             if idx == 6:
-                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = mergeExeclData(inputdata[idx])
+                wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = mergeExcelData(inputdata[idx])
             else:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).value = inputdata[idx]
-            if idx < 2:
+            if idx <= 2:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.leftalign
             elif idx == 4 or idx == 3:
                 wsResDetHor.cell(row=5 + cnt, column=2 + idx).alignment = excelstyle.centeralign

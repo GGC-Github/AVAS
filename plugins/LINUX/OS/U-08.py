@@ -15,7 +15,7 @@ linux008() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux008 U-08"
+		self.codeExecute = "linux008 U-08"
 		self.description = {
 			'Category': '파일 및 디렉터리 관리',
 			'Name': '/etc/shadow 파일 소유자 및 권한 설정',

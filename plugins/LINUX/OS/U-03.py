@@ -18,7 +18,7 @@ linux003() {
 	xml_infoElement_tag_end "$code"
 }
 		"""
-		self.codeExcute = "linux003 U-03"
+		self.codeExecute = "linux003 U-03"
 		self.description = {
 			'Category': '계정 관리',
 			'Name': '계정 잠금 임계값 설정',

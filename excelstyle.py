@@ -10,9 +10,9 @@ fillalign = Alignment(horizontal='fill', vertical='top')
 normalfont = Font(name='맑은 고딕', size=10, color=colors.BLACK)
 whiteboldfont = Font(name='맑은 고딕', size=10, color=colors.WHITE, bold=True)
 greenfont = Font(name='맑은 고딕', size=10, color='009900')
-redfont = Font(name='맑은 고딕', size=10, color='009900')
+redfont = Font(name='맑은 고딕', size=10, color='FF0000')
 bluefont = Font(name='맑은 고딕', size=10, color=colors.BLUE)
-headredfont = Font(name='맑은 고딕', size=16, color='009900', bold=True)
+headredfont = Font(name='맑은 고딕', size=16, color='FF0000', bold=True)
 
 cellbgfill = PatternFill(patternType='solid', fgColor=Color('3F575F'))
 
