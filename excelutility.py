@@ -22,6 +22,8 @@ def mergeExcelData(setString):
             data = f'파일명 : {key.split("FILEDATA:")[1]}\n'
         elif 'CMD:' in key:
             data = f'[ {key.split("CMD:")[1]} ]\n\n'
+        else:
+            data = f'{key} : '
         data += f'{value}\n'
         fullString += data
     return fullString
