@@ -154,7 +154,7 @@ class Plugin(metaclass=ABCMeta):
         reg = re.findall(com, self.stat[key])
         if reg:
             cmpOper = OPS[compType]
-            if not cmpOper(compValue, reg[0]):
+            if not cmpOper(compValue, int(reg[0])):
                 self.stat.update({key: self.stat[key].replace('\n', '(!)\n')})
             else:
                 reCnt += 1
