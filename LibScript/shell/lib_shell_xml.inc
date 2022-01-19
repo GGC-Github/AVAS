@@ -57,7 +57,6 @@ xml_fileInfo_write() {
 
 		if [ -z "`cat $RESULT_FILE_DATA_FILE | grep 'checksum=' | awk -F\"=\" '{ print $2 }' | grep \"$chksum\"`" ]; then
 			file_stat=`stat -c '%A|%a|%F|%s|%n|%U|%u|%G|%g' $name`
-			file_data=`cat "$name" | sed -e 's/^ *//g' -e 's/^	*//g' | egrep -v '^#|^$'`
 
 			echo "        <fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
 			echo "            <filePath checksum=\"$chksum\"><![CDATA[$name]]></filePath>" >> $RESULT_FILE_DATA_FILE 2>&1
@@ -77,15 +76,18 @@ xml_fileInfo_write() {
 					fi
 				fi
 			fi
-			echo "            <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
-			if [ "$real_name" != "" ]; then
-				enc_data="`(data_file_encoding \"$real_name\")`"
-			else
-				enc_data="`(data_file_encoding \"$name\")`"
-			fi
-			echo "$enc_data" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "            ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
-			echo "        </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
+		    if [ -f "$name" ]; then
+		        file_data=`cat "$name" | sed -e 's/^ *//g' -e 's/^	*//g' | egrep -v '^#|^$'`
+                echo "            <fileData><![CDATA[" >> $RESULT_FILE_DATA_FILE 2>&1
+                if [ "$real_name" != "" ]; then
+                    enc_data="`(data_file_encoding \"$real_name\")`"
+                else
+                    enc_data="`(data_file_encoding \"$name\")`"
+                fi
+                echo "$enc_data" >> $RESULT_FILE_DATA_FILE 2>&1
+                echo "            ]]></fileData>" >> $RESULT_FILE_DATA_FILE 2>&1
+            fi
+            echo "        </fileInfo>" >> $RESULT_FILE_DATA_FILE 2>&1
 		fi
 	fi
 }
@@ -155,7 +157,7 @@ xml_sysInfo_contents() {
 
 	process_info=`ps -ef | sed -e 's/^ *//g' -e 's/^	*//g'`
 	port_info=`$port_cmd -na | egrep -i 'tcp|udp' | grep -iv 'TIME_WAIT' | sed -e 's/^ *//g' -e 's/^	*//g'`
-	if [ "$OS_TYPE" = "Linux" ]; then
+	if [ "$OS_TYPE" = "Linux" ] && [ "$systemctl_cmd" != "" ]; then
 	    service_info=`$systemctl_cmd list-units --type service | sed -e 's/^ *//g' -e 's/^	*//g'`
 	fi
     if [ "$ip_list" != "" ]; then
